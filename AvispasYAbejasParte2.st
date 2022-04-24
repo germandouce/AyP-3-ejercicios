@@ -9,15 +9,18 @@ DenotativeObject subclass: #ElHabitatDeJuan
 
 !classDefinition: 'ElHabitatDeJuan class' category: 'AvispasYAbejasParte2'!
 ElHabitatDeJuan class
-	instanceVariableNames: 'huevosFirmaGeneticaPolly huevosFirmaGeneticaOriana huevosFirmaGeneticaLara polillas huevos orugas'!
+	instanceVariableNames: 'orugas polillas dictHuevos'!
 
-!ElHabitatDeJuan class methodsFor: 'MetodosOriana' stamp: 'GD 4/22/2022 15:07:42'!
+!ElHabitatDeJuan class methodsFor: 'MetodosOriana' stamp: 'GD 4/24/2022 15:59:07'!
 cantidadHuevosFirmaGeneticaOriana
-	^huevosFirmaGeneticaOriana.! !
+	^dictHuevos at: 'huevosFirmaGeneticaOriana'. ! !
 
-!ElHabitatDeJuan class methodsFor: 'MetodosOriana' stamp: 'GD 4/22/2022 15:07:42'!
+!ElHabitatDeJuan class methodsFor: 'MetodosOriana' stamp: 'GD 4/24/2022 15:52:40'!
 ponerUnHuevoFirmaGeneticaOriana
-	huevosFirmaGeneticaOriana := huevosFirmaGeneticaOriana+1! !
+	|cantHuevos|
+	cantHuevos := dictHuevos at: 'huevosFirmaGeneticaOriana'.
+	
+	dictHuevos at: 'huevosFirmaGeneticaOriana'  put: cantHuevos + 1.! !
 
 
 !ElHabitatDeJuan class methodsFor: 'Habitat' stamp: 'GD 4/22/2022 13:24:24'!
@@ -28,9 +31,9 @@ agregarOrugas: unaCantidad
 agregarPolillas: UnaCantidad
 	polillas := polillas + UnaCantidad.! !
 
-!ElHabitatDeJuan class methodsFor: 'Habitat' stamp: 'GD 4/22/2022 15:08:56'!
+!ElHabitatDeJuan class methodsFor: 'Habitat' stamp: 'GD 4/24/2022 15:55:48'!
 cantidadDeHuevosDeAvispas
-	^huevosFirmaGeneticaOriana + huevosFirmaGeneticaPolly + huevosFirmaGeneticaLara .
+	^ (dictHuevos at: 'huevosFirmaGeneticaOriana') + (dictHuevos at:'huevosFirmaGeneticaPolly') + (dictHuevos at: 'huevosFirmaGeneticaLara').
 	! !
 
 !ElHabitatDeJuan class methodsFor: 'Habitat' stamp: 'GD 4/22/2022 12:30:10'!
@@ -57,11 +60,14 @@ quitarUnaOruga
 quitarUnaPolilla
 	polillas := polillas - 1.! !
 
-!ElHabitatDeJuan class methodsFor: 'Habitat' stamp: 'GD 4/22/2022 15:08:37'!
+!ElHabitatDeJuan class methodsFor: 'Habitat' stamp: 'GD 4/24/2022 15:29:13'!
 reiniciarHuevos
-	huevosFirmaGeneticaOriana := 0.
-	huevosFirmaGeneticaPolly := 0.
-	huevosFirmaGeneticaLara := 0.! !
+	
+	dictHuevos := Dictionary new.
+	
+	dictHuevos at: 'huevosFirmaGeneticaOriana' put: 0.
+	dictHuevos at: 'huevosFirmaGeneticaPolly' put: 0.
+	dictHuevos at: 'huevosFirmaGeneticaLara' put: 0.! !
 
 !ElHabitatDeJuan class methodsFor: 'Habitat' stamp: 'GD 4/22/2022 13:03:14'!
 reiniciarOrugas
@@ -72,46 +78,55 @@ reiniciarPolillas
 	polillas := 0.! !
 
 
-!ElHabitatDeJuan class methodsFor: 'MetodosPolly' stamp: 'GD 4/22/2022 15:01:40'!
+!ElHabitatDeJuan class methodsFor: 'MetodosPolly' stamp: 'GD 4/24/2022 15:59:43'!
 cantidadHuevosFirmaGeneticaPolly
-	^huevosFirmaGeneticaPolly.! !
+	^dictHuevos at: 'huevosFirmaGeneticaPolly'.! !
 
-!ElHabitatDeJuan class methodsFor: 'MetodosPolly' stamp: 'GD 4/22/2022 14:53:56'!
+!ElHabitatDeJuan class methodsFor: 'MetodosPolly' stamp: 'GD 4/24/2022 16:05:45'!
 ponerUnHuevoFirmaGeneticaPolly
-	huevosFirmaGeneticaPolly := huevosFirmaGeneticaPolly + 1.! !
+	|cantHuevos| 		
+	cantHuevos := dictHuevos at: 'huevosFirmaGeneticaPolly'.
+	
+	dictHuevos at: 'huevosFirmaGeneticaPolly' put: cantHuevos + 1.! !
 
 
-!ElHabitatDeJuan class methodsFor: 'MetodosLara' stamp: 'GD 4/22/2022 15:06:37'!
+!ElHabitatDeJuan class methodsFor: 'MetodosLara' stamp: 'GD 4/24/2022 15:58:11'!
 cantidadHuevosFirmaGeneticaLara
-	^huevosFirmaGeneticaLara.! !
+	^ dictHuevos at: 'huevosFirmaGeneticaLara'.
+	! !
 
-!ElHabitatDeJuan class methodsFor: 'MetodosLara' stamp: 'GD 4/22/2022 15:25:34'!
+!ElHabitatDeJuan class methodsFor: 'MetodosLara' stamp: 'GD 4/24/2022 16:03:16'!
 hayHuevosFirmaGeneticaOrianaOPolly
-	^huevosFirmaGeneticaOriana + huevosFirmaGeneticaPolly > 0! !
+	^(dictHuevos at: 'huevosFirmaGeneticaOriana') + (dictHuevos at: 'huevosFirmaGeneticaPolly') > 0! !
 
-!ElHabitatDeJuan class methodsFor: 'MetodosLara' stamp: 'GD 4/22/2022 15:07:11'!
+!ElHabitatDeJuan class methodsFor: 'MetodosLara' stamp: 'GD 4/24/2022 16:06:22'!
 ponerUnHuevoFirmaGeneticaLara
-	huevosFirmaGeneticaLara := huevosFirmaGeneticaLara+1! !
+	|cantHuevos| 		
+	cantHuevos := dictHuevos at: 'huevosFirmaGeneticaLara'.
+	
+	dictHuevos at: 'huevosFirmaGeneticaLara' put: cantHuevos + 1.! !
 
-!ElHabitatDeJuan class methodsFor: 'MetodosLara' stamp: 'GD 4/22/2022 15:41:01'!
+!ElHabitatDeJuan class methodsFor: 'MetodosLara' stamp: 'GD 4/24/2022 16:17:58'!
 quitarUnHuevoFirmaGeneticaOrianaOPolly
-	huevosFirmaGeneticaOriana > 0 ifTrue:
-	[huevosFirmaGeneticaOriana := huevosFirmaGeneticaOriana -1 ]
+	
+	|cantHuevosOriana cantHuevosPolly |
+	cantHuevosOriana  := dictHuevos at: 'huevosFirmaGeneticaOriana'.
+	cantHuevosPolly  := dictHuevos at: 'huevosFirmaGeneticaPolly'.	
+	
+	cantHuevosOriana > 0 ifTrue:
+	[dictHuevos at: 'huevosFirmaGeneticaOriana' put: cantHuevosOriana -1]
 	
 	ifFalse:
-	[huevosFirmaGeneticaPolly := huevosFirmaGeneticaPolly - 1 ]! !
+	[dictHuevos at: 'huevosFirmaGeneticaPolly' put: cantHuevosPolly -1]! !
 
 
-!ElHabitatDeJuan class methodsFor: '--** private fileout/in **--' stamp: 'GD 4/22/2022 15:53:17'!
+!ElHabitatDeJuan class methodsFor: '--** private fileout/in **--' stamp: 'GD 4/24/2022 16:20:54'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
-	huevosFirmaGeneticaPolly := 0.
-	huevosFirmaGeneticaOriana := 0.
-	huevosFirmaGeneticaLara := 0.
+	orugas := 0.
 	polillas := 0.
-	huevos := 7.
-	orugas := 0.! !
+	dictHuevos := ((Dictionary new) add: ('huevosFirmaGeneticaLara'->0); add: ('huevosFirmaGeneticaOriana'->0); add: ('huevosFirmaGeneticaPolly'->0); yourself).! !
 
 
 !classDefinition: #Lara category: 'AvispasYAbejasParte2'!
