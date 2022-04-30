@@ -21,23 +21,23 @@ TestCase subclass: #CustomerBookTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'GD 4/29/2022 13:27:43'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 13:40:22'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook cronometro |
+	| customerBook cronometro|
 	
-	cronometro:= Cronometro new.
 	customerBook := CustomerBook new.
+	cronometro := Cronometro new.
 	
-	cronometro iniciar. 
+	cronometro iniciar.
 	customerBook addCustomerNamed: 'John Lennon'.
 	cronometro terminar.
 	
-	self assert: (cronometro tiempoTranscurrido ) < (50 * millisecond)
+	self assert: (cronometro tiempoPasado) < (50 * millisecond)
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'GD 4/29/2022 15:01:23'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 14:35:12'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
 	| customerBook cronometro |
@@ -51,11 +51,9 @@ test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 	customerBook removeCustomerNamed: 'Paul McCartney'.
 	cronometro terminar.
 	
-	self assert: (cronometro tiempoTranscurrido ) < (100 * millisecond)
-	
-! !
+	self assert: (cronometro tiempoPasado ) < (100 * millisecond)! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'GD 4/29/2022 13:44:30'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 14:18:18'!
 test03CanNotAddACustomerWithEmptyName 
 
 	| customerBook |
@@ -69,21 +67,20 @@ test03CanNotAddACustomerWithEmptyName
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
 			self assert: customerBook isEmpty ]! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 8/28/2017 08:57:25'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 14:35:15'!
 test04CanNotRemoveAnInvalidCustomer
 	
-	| customerBook johnLennon |
+	| customerBook |
 			
 	customerBook := CustomerBook new.
-	johnLennon := 'John Lennon'.
-	customerBook addCustomerNamed: johnLennon.
+	customerBook addCustomerNamed: 'John Lennon'.
 	
 	[ customerBook removeCustomerNamed: 'Paul McCartney'.
-	self fail ]
+	self fail	]
 		on: NotFound 
 		do: [ :anError | 
 			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon) ]
+			self assert: (customerBook includesCustomerNamed: 'John Lennon') ]
 ! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:25'!
@@ -106,7 +103,7 @@ test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:28'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 14:35:20'!
 test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 
 	| customerBook paulMcCartney|
@@ -127,7 +124,7 @@ test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/30/2020 09:08:46'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 14:29:49'!
 test07CanNotSuspendAnInvalidCustomer
 	
 	| customerBook johnLennon |
@@ -170,19 +167,23 @@ Object subclass: #Cronometro
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!Cronometro methodsFor: 'as yet unclassified' stamp: 'GD 4/29/2022 13:22:05'!
+!Cronometro methodsFor: 'funcionalidad' stamp: 'SG 4/29/2022 13:08:11'!
 iniciar
-	tiempoInicial := Time millisecondClockValue * millisecond.
-	! !
+	tiempoInicial := Time millisecondClockValue * millisecond! !
 
-!Cronometro methodsFor: 'as yet unclassified' stamp: 'GD 4/29/2022 13:23:19'!
+!Cronometro methodsFor: 'funcionalidad' stamp: 'SG 4/29/2022 13:08:41'!
 terminar
-	tiempoFinal := Time millisecondClockValue * millisecond.
-	! !
+	tiempoFinal := Time millisecondClockValue * millisecond! !
 
-!Cronometro methodsFor: 'as yet unclassified' stamp: 'GD 4/29/2022 13:24:23'!
-tiempoTranscurrido
-	^tiempoFinal - tiempoInicial.! !
+!Cronometro methodsFor: 'funcionalidad' stamp: 'SG 4/29/2022 13:09:19'!
+tiempoPasado
+	^tiempoFinal - tiempoInicial! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Cronometro class' category: 'CodigoRepetido-Ejercicio'!
+Cronometro class
+	instanceVariableNames: 'tiempoInicial tiempoFinal'!
 
 
 !classDefinition: #CustomerBook category: 'CodigoRepetido-Ejercicio'!
@@ -211,11 +212,14 @@ initialize
 	suspended:= OrderedCollection new.! !
 
 
-!CustomerBook methodsFor: 'customer management' stamp: 'GD 4/29/2022 13:16:07'!
+!CustomerBook methodsFor: 'customer management' stamp: 'SG 4/30/2022 13:01:28'!
 addCustomerNamed: aName
+
+	aName isEmpty 
+	ifTrue: [ self signalCustomerNameCannotBeEmpty ].
 	
-	aName isEmpty ifTrue: [ self signalCustomerNameCannotBeEmpty ].
-	(self includesCustomerNamed: aName) ifTrue: [ self signalCustomerAlreadyExists ].
+	(self includesCustomerNamed: aName) 
+	ifTrue: [ self signalCustomerAlreadyExists ].
 	
 	active add: aName ! !
 
@@ -224,88 +228,26 @@ numberOfActiveCustomers
 	
 	^active size! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
+!CustomerBook methodsFor: 'customer management' stamp: 'SG 4/30/2022 13:47:34'!
 numberOfCustomers
 	
-	^active size + suspended size! !
+	^self numberOfActiveCustomers + self numberOfSuspendedCustomers ! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'NR 9/19/2018 17:36:09'!
 numberOfSuspendedCustomers
 	
 	^suspended size! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'GD 4/29/2022 15:29:13'!
-removeCustomerNamed: aName
-	|posicion|
+!CustomerBook methodsFor: 'customer management' stamp: 'SG 4/30/2022 14:34:48'!
+removeCustomerNamed: aName 
 	
-	posicion := self returnPositionFromCollection: active ofClientNamed: aName	.	
-	(posicion = 0) ifTrue:
-	[
-		[posicion := self returnPositionFromCollection: suspended ofClientNamed: aName	].
-		(posicion = 0) ifTrue:
-			[^ NotFound signal]
-		ifFalse:
-			[suspended removeAt: posicion].
-			^aName.
-			
-	]
-	ifFalse:
-		[active removeAt: posicion].
-		^aName.
+	(self tryRemoveFrom: active customerNamed: aName) = '' 
+	ifFalse: [^aName].
 	
-	"
-	1 to: active size do: 
-		[ :index |
-			aName = (active at: index)
-				ifTrue: [
-					active removeAt: index.
-					^ aName 
-				] 
-		].
-	1 to: suspended size do: 
-		[ :index |
-			aName = (suspended at: index)
-				ifTrue: [
-					suspended removeAt: index.
-					^ aName 
-				] 
-		].
+	(self tryRemoveFrom: suspended customerNamed: aName) = '' 
+	ifFalse: [^aName].
 	
-	(active, suspended) do:
-		[:lista| 1 to: lista size do: 
-			[ :index |
-				aName = (lista at: index)
-					ifTrue: [
-						lista removeAt: index.
-						^ aName 
-					] 
-			].
-		].
-	
-	^NotFound signal.
-	"! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'GD 4/29/2022 14:13:07'!
-removeCustomerNamedFromActive: aName
-	1 to: active size do: 
-			[ :index |
-				aName = (active at: index)
-					ifTrue: [
-						active removeAt: index.
-						^ aName 
-					] 
-			].! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'GD 4/29/2022 14:07:40'!
-removeCustomerNamedFromSuspended: aName
-	1 to: suspended size do: 
-		[ :index |
-			aName = (suspended at: index)
-				ifTrue: [
-					suspended removeAt: index.
-					^ aName 
-				] 
-		].! !
+	^ NotFound signal.! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'HernanWilkinson 7/6/2011 17:52'!
 signalCustomerAlreadyExists 
@@ -327,21 +269,19 @@ suspendCustomerNamed: aName
 	suspended add: aName
 ! !
 
-
-!CustomerBook methodsFor: 'yet-unclasified' stamp: 'GD 4/29/2022 15:26:27'!
-returnPositionFromCollection: unaColeccion ofClientNamed: aName
-	1 to: unaColeccion size do:
-		[:index|
-			aName = (unaColeccion at: index)
-				ifTrue: [
-					^index
-				]
-		].
+!CustomerBook methodsFor: 'customer management' stamp: 'SG 4/29/2022 17:01:57'!
+tryRemoveFrom: aCollection customerNamed: aName
+ 
+	1 to: aCollection size do: 
+	[ :index |
+		aName = (aCollection at: index)
+			ifTrue: [
+				aCollection removeAt: index.
+				^ aName 
+			] 
+	].
 	
-	^ 0.
-					
-	
-! !
+	^''.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
