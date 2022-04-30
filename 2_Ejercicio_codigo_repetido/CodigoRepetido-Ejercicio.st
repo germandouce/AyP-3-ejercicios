@@ -21,37 +21,34 @@ TestCase subclass: #CustomerBookTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 13:40:22'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 15:41:03'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook cronometro|
+	| customerBook chronometer |
 	
-	customerBook := CustomerBook new.
-	cronometro := Cronometro new.
+	customerBook _ CustomerBook new.
+	chronometer _ Chronometer new.
 	
-	cronometro iniciar.
+	chronometer start.
 	customerBook addCustomerNamed: 'John Lennon'.
-	cronometro terminar.
+	chronometer finish.
 	
-	self assert: (cronometro tiempoPasado) < (50 * millisecond)
-	
-! !
+	self assert: chronometer timePassed < (50 * millisecond).! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 14:35:12'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 15:41:07'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook cronometro |
+	| customerBook chronometer |
 	
-	cronometro := Cronometro new.
-	customerBook := CustomerBook new.
-	
+	chronometer _ Chronometer new.
+	customerBook _ CustomerBook new.
 	customerBook addCustomerNamed: 'Paul McCartney'.
-	  
-	cronometro iniciar.
-	customerBook removeCustomerNamed: 'Paul McCartney'.
-	cronometro terminar.
 	
-	self assert: (cronometro tiempoPasado ) < (100 * millisecond)! !
+	chronometer start.
+	customerBook removeCustomerNamed: 'Paul McCartney'.
+	chronometer finish.
+	
+	self assert: chronometer timePassed < (100 * millisecond).! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'SG 4/30/2022 14:18:18'!
 test03CanNotAddACustomerWithEmptyName 
@@ -160,29 +157,29 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 ! !
 
 
-!classDefinition: #Cronometro category: 'CodigoRepetido-Ejercicio'!
-Object subclass: #Cronometro
-	instanceVariableNames: 'tiempoInicial tiempoFinal'
+!classDefinition: #Chronometer category: 'CodigoRepetido-Ejercicio'!
+Object subclass: #Chronometer
+	instanceVariableNames: 'initialTime finishTime'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!Cronometro methodsFor: 'funcionalidad' stamp: 'SG 4/29/2022 13:08:11'!
-iniciar
-	tiempoInicial := Time millisecondClockValue * millisecond! !
+!Chronometer methodsFor: 'functions'!
+finish
+	finishTime _ Time millisecondClockValue * millisecond.! !
 
-!Cronometro methodsFor: 'funcionalidad' stamp: 'SG 4/29/2022 13:08:41'!
-terminar
-	tiempoFinal := Time millisecondClockValue * millisecond! !
+!Chronometer methodsFor: 'functions'!
+start
+	initialTime _ Time millisecondClockValue * millisecond.! !
 
-!Cronometro methodsFor: 'funcionalidad' stamp: 'SG 4/29/2022 13:09:19'!
-tiempoPasado
-	^tiempoFinal - tiempoInicial! !
+!Chronometer methodsFor: 'functions'!
+timePassed
+	^ finishTime - initialTime.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Cronometro class' category: 'CodigoRepetido-Ejercicio'!
-Cronometro class
+!classDefinition: 'Chronometer class' category: 'CodigoRepetido-Ejercicio'!
+Chronometer class
 	instanceVariableNames: 'tiempoInicial tiempoFinal'!
 
 
