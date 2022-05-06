@@ -89,7 +89,7 @@ test12FraccionAddsEnteroCorrectly
 
 	self assert: (Entero with: 6) / (Entero with: 5) equals: oneFifth + one! !
 
-!NumeroTest methodsFor: 'tests' stamp: 'JS 5/5/2022 03:43:16'!
+!NumeroTest methodsFor: 'tests' stamp: 'SG 5/5/2022 20:41:08'!
 test13EnteroMultipliesFraccionCorrectly
 
 	self assert: twoFifth equals: two * oneFifth! !
@@ -266,7 +266,7 @@ test42SignIsCorrectlyAssignedToFractionWithNegativeDivisor
 	self assert: oneHalf negated equals: (one / negativeTwo)! !
 
 
-!NumeroTest methodsFor: 'setup' stamp: 'NR 9/23/2018 23:46:28'!
+!NumeroTest methodsFor: 'setup' stamp: 'SG 5/5/2022 20:40:15'!
 setUp
 
 	zero := Entero with: 0.
@@ -284,6 +284,8 @@ setUp
 	twoFifth := two / five.
 	twoTwentyfifth := two / (Entero with: 25).
 	fiveHalfs := five / two.
+	
+	fourFifth := four / five.
 	! !
 
 
@@ -364,16 +366,22 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/5/2022 20:49:55'!
 * aMultiplier 
 	
-	^self class with: value * aMultiplier integerValue
+	^aMultiplier beMultipliedToAnInteger: self
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/5/2022 20:26:45'!
 + anAdder 
 	
-	^self class with: value + anAdder integerValue
+	"(anAdder isKindOf: self class) ifTrue: [^self class with: value + anAdder integerValue ].
+	(anAdder isKindOf: Fraccion) ifTrue: [^self * anAdder denominator + anAdder numerator / anAdder denominator ].
+	
+	self invalidNumberType 
+	Debemos terminar con solo esto:"
+	
+	^anAdder beAddedToAnInteger: self
 ! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
@@ -381,10 +389,10 @@ Numero subclass: #Entero
 	
 	^ self class with: value - aSubtrahend integerValue.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/5/2022 20:58:25'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	^aDivisor beDividedToAnInteger: self! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -458,6 +466,19 @@ greatestCommonDivisorWith: anEntero
 	
 	^self class with: (value gcd: anEntero integerValue)! !
 
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/5/2022 20:28:45'!
+beAddedToAnInteger: anAugend
+	^self class with: anAugend integerValue + self integerValue! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/5/2022 20:59:47'!
+beDividedToAnInteger: aDivisor
+	^self class with: aDivisor integerValue / self integerValue! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/5/2022 20:43:38'!
+beMultipliedToAnInteger: aMultiplier
+	^self class with: aMultiplier integerValue * self integerValue! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -484,21 +505,18 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/5/2022 20:48:39'!
 * aMultiplier 
 	
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+	"^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)"
+	^self beMultipliedToAnInteger: aMultiplier
+	
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/5/2022 20:29:21'!
 + anAdder 
 	
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-	newDenominator := denominator * anAdder denominator.
-	
-	^newNumerator / newDenominator ! !
+	^self beAddedToAnInteger: anAdder! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
 - aSubtrahend 
@@ -517,7 +535,7 @@ Numero subclass: #Fraccion
 	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
 
 
-!Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
+!Fraccion methodsFor: 'comparing' stamp: 'SG 5/5/2022 20:29:45'!
 = anObject
 
 	^(anObject isKindOf: self class) and: [ (numerator * anObject denominator) = (denominator * anObject numerator) ]! !
@@ -573,6 +591,19 @@ printOn: aStream
 		print: numerator;
 		nextPut: $/;
 		print: denominator ! !
+
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/5/2022 20:28:37'!
+beAddedToAnInteger: anAugend
+	^anAugend * self denominator + self numerator / self denominator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/5/2022 20:59:06'!
+beDividedToAnInteger: aDivisor
+	^aDivisor * self numerator / self denominator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/5/2022 20:46:15'!
+beMultipliedToAnInteger: aMultiplier
+	^aMultiplier * self numerator / self denominator! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
