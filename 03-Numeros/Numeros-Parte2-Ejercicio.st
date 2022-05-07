@@ -481,14 +481,14 @@ beDividedToAnInteger: aDivisor
 beMultipliedToAnInteger: aMultiplier
 	^self class with: aMultiplier integerValue * self integerValue! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 20:39:48'!
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 20:50:46'!
 beSubstractedToInteger: aSubtrahend
 
 	"^aSubtrahend beSubstractedToInteger: self"
 	
 	(aSubtrahend isKindOf: Entero) ifTrue: [^Entero with: aSubtrahend integerValue - self integerValue].
 	
-	(aSubtrahend isKindOf: Fraccion) ifTrue: [^Fraccion class with: aSubtrahend numerator - (self value * aSubtrahend denominator) over: aSubtrahend denominator]
+	(aSubtrahend isKindOf: Fraccion) ifTrue: [^( aSubtrahend numerator - (self value * aSubtrahend denominator)) /  aSubtrahend denominator]
 	
 	! !
 
