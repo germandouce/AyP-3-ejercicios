@@ -381,15 +381,20 @@ Numero subclass: #Entero
 
 	^anAdder beAddedToAnInteger: self! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 19:49:34'!
 - aSubtrahend 
 	
-	^ self class with: value - aSubtrahend integerValue.! !
+	"^ self class with: value - aSubtrahend integerValue."
+	^aSubtrahend beSubstractedToInteger: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 19:34:29'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	
+	
+	(aDivisor isKindOf: Entero) ifTrue: [^Fraccion with: self over: aDivisor].
+	
+	(aDivisor isKindOf: Fraccion) ifTrue: [^Fraccion with: self * aDivisor denominator over: aDivisor numerator].! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -476,6 +481,17 @@ beDividedToAnInteger: aDivisor
 beMultipliedToAnInteger: aMultiplier
 	^self class with: aMultiplier integerValue * self integerValue! !
 
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 20:39:48'!
+beSubstractedToInteger: aSubtrahend
+
+	"^aSubtrahend beSubstractedToInteger: self"
+	
+	(aSubtrahend isKindOf: Entero) ifTrue: [^Entero with: aSubtrahend integerValue - self integerValue].
+	
+	(aSubtrahend isKindOf: Fraccion) ifTrue: [^Fraccion class with: aSubtrahend numerator - (self value * aSubtrahend denominator) over: aSubtrahend denominator]
+	
+	! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -514,21 +530,25 @@ Numero subclass: #Fraccion
 	
 	^self beAddedToAnInteger: anAdder! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 20:42:26'!
 - aSubtrahend 
 	
-	| newNumerator newDenominator |
+	"| newNumerator newDenominator |
 	
 	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
 	newDenominator := denominator * aSubtrahend denominator.
 	
-	^newNumerator / newDenominator 
-! !
+	^newNumerator / newDenominator "
+	
+	^aSubtrahend beSubstractedToInteger: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 19:38:25'!
 / aDivisor 
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	(aDivisor isKindOf: Fraccion) ifTrue: [^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
+	
+	(aDivisor isKindOf: Entero) ifTrue: [^numerator / (denominator * aDivisor value)]
+	! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -608,12 +628,23 @@ beAddedToAnInteger: anAugend
 beDividedToAnInteger: aDivisor
 	^aDivisor * self numerator / self denominator! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 17:59:42'!
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 19:29:48'!
 beMultipliedToAnInteger: aMultiplier
+
+	(aMultiplier isKindOf: Entero) ifTrue: [^self class with: self numerator * aMultiplier value 
+		over: self denominator].
 	
-	^self class with: self numerator * aMultiplier numerator
+	(aMultiplier isKindOf: Fraccion) 
+	ifTrue: [^self class with: self numerator * aMultiplier numerator
 	
-	over: self denominator * aMultiplier denominator! !
+	over: self denominator * aMultiplier denominator].
+	! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 20:45:18'!
+beSubstractedToInteger: aSubtrahend
+	(aSubtrahend isKindOf: Entero) ifTrue:[^(aSubtrahend value * self denominator - self numerator) / self denominator].
+	
+	(aSubtrahend isKindOf: Fraccion) ifTrue:[^(aSubtrahend numerator * self denominator) - (aSubtrahend denominator * self numerator) / (aSubtrahend denominator  * self denominator )].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
