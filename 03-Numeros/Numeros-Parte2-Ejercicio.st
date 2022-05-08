@@ -364,13 +364,13 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 17:25:07'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/8/2022 12:52:33'!
 * aMultiplier 
 	
-	^aMultiplier beMultipliedToAnInteger: self
+	^aMultiplier beMultipliedToAnEntero: self
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 17:24:56'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/8/2022 02:26:45'!
 + anAdder 
 	
 	"(anAdder isKindOf: self class) ifTrue: [^self class with: value + anAdder integerValue ].
@@ -379,22 +379,21 @@ Numero subclass: #Entero
 	self invalidNumberType 
 	Debemos terminar con solo esto:"
 
-	^anAdder beAddedToAnInteger: self! !
+	"^anAdder beAddedToAnInteger: self"
+	^anAdder beAddedToAnEntero: self! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 19:49:34'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/8/2022 13:44:46'!
 - aSubtrahend 
 	
 	"^ self class with: value - aSubtrahend integerValue."
-	^aSubtrahend beSubstractedToInteger: self.! !
+	^aSubtrahend beSubstractedToAnEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 19:34:29'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SG 5/8/2022 13:28:18'!
 / aDivisor 
 	
+	"(aDivisor isKindOf: Fraccion) ifTrue: [^Fraccion with: self * aDivisor denominator over: aDivisor numerator]."
 	
-	
-	(aDivisor isKindOf: Entero) ifTrue: [^Fraccion with: self over: aDivisor].
-	
-	(aDivisor isKindOf: Fraccion) ifTrue: [^Fraccion with: self * aDivisor denominator over: aDivisor numerator].! !
+	^aDivisor divideAnEntero: self! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -469,28 +468,46 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 17:24:01'!
-beAddedToAnInteger: anAugend
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:51:22'!
+beAddedToAFraccion: anAugend
+
+	^(self value * anAugend denominator + anAugend numerator)
+	/ anAugend denominator! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:51:25'!
+beAddedToAnEntero: anAugend
+
 	^self class with: anAugend integerValue + self integerValue! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 17:24:10'!
-beDividedToAnInteger: aDivisor
-	^self class with: aDivisor integerValue / self integerValue! !
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:51:28'!
+beMultipliedToAFraccion: aMultiplier
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 17:24:19'!
-beMultipliedToAnInteger: aMultiplier
+	^(aMultiplier numerator * self value) / aMultiplier denominator! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:51:32'!
+beMultipliedToAnEntero: aMultiplier
+
 	^self class with: aMultiplier integerValue * self integerValue! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 20:50:46'!
-beSubstractedToInteger: aSubtrahend
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:43:44'!
+beSubstractedToAFraccion: aSubtrahend
 
-	"^aSubtrahend beSubstractedToInteger: self"
+	^( aSubtrahend numerator - (self value * aSubtrahend denominator)) /  aSubtrahend denominator! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:48:39'!
+beSubstractedToAnEntero: aSubtrahend
+
+	^self class with: aSubtrahend integerValue - self integerValue! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:51:18'!
+divideAFraccion: aDivisor
 	
-	(aSubtrahend isKindOf: Entero) ifTrue: [^Entero with: aSubtrahend integerValue - self integerValue].
-	
-	(aSubtrahend isKindOf: Fraccion) ifTrue: [^( aSubtrahend numerator - (self value * aSubtrahend denominator)) /  aSubtrahend denominator]
-	
-	! !
+	^Fraccion with: aDivisor numerator over: aDivisor denominator * self! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:51:38'!
+divideAnEntero: aDivisor
+
+	^Fraccion with: aDivisor over: self! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -518,19 +535,20 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 17:25:25'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/8/2022 12:51:38'!
 * aMultiplier 
 	
 	"^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)"
-	^self beMultipliedToAnInteger: aMultiplier
+	^aMultiplier beMultipliedToAFraccion: self
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 17:27:35'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/8/2022 12:56:39'!
 + anAdder 
 	
-	^self beAddedToAnInteger: anAdder! !
+	"^self beAddedToAnInteger: anAdder"
+	^anAdder beAddedToAFraccion: self! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 20:42:26'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/8/2022 13:46:14'!
 - aSubtrahend 
 	
 	"| newNumerator newDenominator |
@@ -540,14 +558,16 @@ Numero subclass: #Fraccion
 	
 	^newNumerator / newDenominator "
 	
-	^aSubtrahend beSubstractedToInteger: self.! !
+	^aSubtrahend beSubstractedToAFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/7/2022 19:38:25'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SG 5/8/2022 13:26:50'!
 / aDivisor 
 	
-	(aDivisor isKindOf: Fraccion) ifTrue: [^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
+	"(aDivisor isKindOf: Fraccion) ifTrue: [^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
 	
-	(aDivisor isKindOf: Entero) ifTrue: [^numerator / (denominator * aDivisor value)]
+	(aDivisor isKindOf: Entero) ifTrue: [^numerator / (denominator * aDivisor value)]"
+	
+	^ aDivisor divideAFraccion: self
 	! !
 
 
@@ -609,42 +629,56 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 19:18:28'!
-beAddedToAnInteger: anAugend
-	" PENDIENTE "
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 12:57:06'!
+beAddedToAFraccion: anAugend
 	
-	(anAugend isKindOf: Entero) 
-	ifTrue: [^ self class with: anAugend value * self denominator + self numerator
-		over: self denominator].
-	
-	(anAugend isKindOf: Fraccion) ifTrue:
-	[^self class with: self numerator * anAugend denominator + self denominator * anAugend numerator
-	over: anAugend denominator * self denominator].
+	^self class with: self numerator * anAugend denominator + self denominator * anAugend numerator
+	over: anAugend denominator * self denominator
 
 
 	! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 17:25:54'!
-beDividedToAnInteger: aDivisor
-	^aDivisor * self numerator / self denominator! !
-
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 19:29:48'!
-beMultipliedToAnInteger: aMultiplier
-
-	(aMultiplier isKindOf: Entero) ifTrue: [^self class with: self numerator * aMultiplier value 
-		over: self denominator].
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 02:21:30'!
+beAddedToAnEntero: anAugend
 	
-	(aMultiplier isKindOf: Fraccion) 
-	ifTrue: [^self class with: self numerator * aMultiplier numerator
-	
-	over: self denominator * aMultiplier denominator].
+	^ self class with: anAugend value * self denominator + self numerator
+		over: self denominator
+
+
 	! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/7/2022 20:45:18'!
-beSubstractedToInteger: aSubtrahend
-	(aSubtrahend isKindOf: Entero) ifTrue:[^(aSubtrahend value * self denominator - self numerator) / self denominator].
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 12:54:41'!
+beMultipliedToAFraccion: aMultiplier
+
+	^self class with: self numerator * aMultiplier numerator
 	
-	(aSubtrahend isKindOf: Fraccion) ifTrue:[^(aSubtrahend numerator * self denominator) - (aSubtrahend denominator * self numerator) / (aSubtrahend denominator  * self denominator )].! !
+	over: self denominator * aMultiplier denominator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 12:50:08'!
+beMultipliedToAnEntero: aMultiplier
+
+	^self class with: self numerator * aMultiplier value 
+		over: self denominator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:51:53'!
+beSubstractedToAFraccion: aSubtrahend
+
+	^(aSubtrahend numerator * self denominator) - (aSubtrahend denominator * self numerator) / (aSubtrahend denominator  * self denominator )! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:51:56'!
+beSubstractedToAnEntero: aSubtrahend
+
+	^(aSubtrahend value * self denominator - self numerator) / self denominator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:52:00'!
+divideAFraccion: aDivisor
+
+	^(aDivisor numerator * self denominator) / (aDivisor denominator * self numerator)! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'SG 5/8/2022 13:52:05'!
+divideAnEntero: aDivisor
+	
+	^aDivisor * self denominator / self numerator! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
