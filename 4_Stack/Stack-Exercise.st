@@ -1,4 +1,4 @@
-!classDefinition: #OOStackTest category: #'Stack-Exercise'!
+!classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -137,7 +137,7 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 ! !
 
 
-!classDefinition: #SentenceFinderByPrefixTest category: #'Stack-Exercise'!
+!classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -145,16 +145,61 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	category: 'Stack-Exercise'!
 
 
-!classDefinition: #OOStack category: #'Stack-Exercise'!
+!classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: ''
+	instanceVariableNames: 'listaElementos'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:38:33'!
+AAA
+	^ listaElementos removeLast.
+		
+	! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:38:57'!
+BBB
+	self error: self class stackEmptyErrorDescription.
+		
+	! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 13:53:37'!
+initialize
+	listaElementos := OrderedCollection new.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 13:55:51'!
+isEmpty
+	^ listaElementos isEmpty. ! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:30:50'!
+pop
+	listaElementos isEmpty ifFalse:
+		[^ listaElementos removeLast.].
+	listaElementos isEmpty ifTrue:
+		[self error: self class stackEmptyErrorDescription] 
+		
+	! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:01:19'!
+push: anObject
+	listaElementos add: anObject.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:18:36'!
+size
+	^listaElementos size.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:36:20'!
+top
+	listaElementos isEmpty ifFalse:
+		[^listaElementos at: listaElementos size.].
+	listaElementos isEmpty ifTrue:
+		[self error: self class stackEmptyErrorDescription].
+	! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'OOStack class' category: #'Stack-Exercise'!
+!classDefinition: 'OOStack class' category: 'Stack-Exercise'!
 OOStack class
 	instanceVariableNames: ''!
 
@@ -164,7 +209,7 @@ stackEmptyErrorDescription
 	^ 'Stack is empty'! !
 
 
-!classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
+!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: ''
 	classVariableNames: ''
