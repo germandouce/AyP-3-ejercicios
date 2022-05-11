@@ -152,18 +152,6 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:38:33'!
-AAA
-	^ listaElementos removeLast.
-		
-	! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:38:57'!
-BBB
-	self error: self class stackEmptyErrorDescription.
-		
-	! !
-
 !OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 13:53:37'!
 initialize
 	listaElementos := OrderedCollection new.! !
