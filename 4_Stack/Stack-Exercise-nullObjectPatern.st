@@ -152,18 +152,6 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:38:33'!
-AAA
-	^ listaElementos removeLast.
-		
-	! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:38:57'!
-BBB
-	self error: self class stackEmptyErrorDescription.
-		
-	! !
-
 !OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 15:08:41'!
 initialize
 	contenido := NullList new.! !
@@ -172,12 +160,14 @@ initialize
 isEmpty
 	^ contenido isEmpty.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:20:03'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:41:19'!
 pop
 	|poppedElement|
 	poppedElement := contenido pop.
+	
 	contenido:=contenido chequeo.
-	^poppedElement .
+	
+	^poppedElement.
 		
 	! !
 
@@ -188,16 +178,13 @@ push: anObject
 	"contenido add: anObject.
 	"! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:18:36'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:38:59'!
 size
-	^listaElementos size.! !
+	^contenido size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 14:36:20'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:38:18'!
 top
-	listaElementos isEmpty ifFalse:
-		[^listaElementos at: listaElementos size.].
-	listaElementos isEmpty ifTrue:
-		[self error: self class stackEmptyErrorDescription].
+	^contenido top.
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -239,9 +226,9 @@ StackContent subclass: #NullList
 isEmpty
 	^true.! !
 
-!NullList methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:16:12'!
+!NullList methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:43:42'!
 pop
-	self error: self class stackEmptyErrorDescription.! !
+	^self error: OOStack stackEmptyErrorDescription.! !
 
 !NullList methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 15:36:30'!
 push: anObject
@@ -249,6 +236,14 @@ push: anObject
 	lista:= StackList new.
 	lista push: anObject.
 	^lista.! !
+
+!NullList methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:39:38'!
+size
+	^0.! !
+
+!NullList methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:42:51'!
+top
+	^self error: OOStack stackEmptyErrorDescription.! !
 
 
 !classDefinition: #StackList category: 'Stack-Exercise'!
@@ -278,3 +273,11 @@ pop
 !StackList methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 15:55:07'!
 push: anObject
 	listaElementos add: anObject.! !
+
+!StackList methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:40:01'!
+size
+	^listaElementos size.! !
+
+!StackList methodsFor: 'as yet unclassified' stamp: 'GD 5/11/2022 16:37:12'!
+top
+	^listaElementos at: listaElementos size.! !
