@@ -185,8 +185,8 @@ test03SentenceFinderIsCaseSensitive
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:03:23'!
-test04StackShouldMaintainOrder
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 17:00:14'!
+test04StackShouldMaintainOrderAfterSearch
 	| stack |
 	
 	stack := OOStack new.
@@ -209,8 +209,8 @@ test05StackWithOneElementReturnsThatElement
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:40:37'!
-test06StackWithVariousElementsReturnsOneElement
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 17:03:26'!
+test06StackWithMoreThanOneElementReturnsOneElement
 	| stack |
 	
 	stack := OOStack new.
@@ -223,8 +223,8 @@ test06StackWithVariousElementsReturnsOneElement
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:44:37'!
-test07StackWithMoreThanOneElementReturnsMoreThanOneElement
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 17:01:29'!
+test07StackWithMoreThanOneElementCanReturnMoreThanOneElement
 	| stack |
 	
 	stack := OOStack new.
@@ -251,8 +251,8 @@ test08StackDoesNotMatchAnyElementReturnsEmptySet
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:55:25'!
-test09StringInElementsButNotPrefixReturnsEmptySet
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 17:09:37'!
+test09ElementsPrefixDoesNotMatchStringReturnsEmptySet
 	| stack |
 	
 	stack := OOStack new.
@@ -336,41 +336,43 @@ Object subclass: #SentenceFinderByPrefix
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:06:59'!
+!SentenceFinderByPrefix class methodsFor: 'errors' stamp: 'SG 5/14/2022 15:06:59'!
 emptyStringError
 	
 	^ 'String is empty'! !
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 16:19:44'!
+!SentenceFinderByPrefix class methodsFor: 'errors' stamp: 'SG 5/14/2022 15:18:50'!
+stringHasASpaceError
+	
+	^ 'String should not have spaces'! !
+
+
+!SentenceFinderByPrefix class methodsFor: 'operations' stamp: 'SG 5/14/2022 16:54:47'!
 find: aString in: aStack
-	| resultado |
+	| result |
 	
 	aString size = 0 ifTrue: [self error: self emptyStringError].
 	(aString includesSubString: ' ') ifTrue: [self error: self stringHasASpaceError].
 	
-	resultado := Set new.
+	result := Set new.
 	
-	self find: aString in: aStack andSavesIn: resultado.
+	self find: aString in: aStack andSavesIn: result.
 	
-	^resultado! !
+	^result! !
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 16:36:54'!
+
+!SentenceFinderByPrefix class methodsFor: 'operations - private' stamp: 'SG 5/14/2022 16:56:23'!
 find: aString in: aStack andSavesIn: aCollection
-	| topeGuardado |
+	| actualTop |
 	
-	topeGuardado := aStack pop.
+	actualTop := aStack pop.
 	
 	aStack isEmpty ifFalse: [self find: aString in: aStack andSavesIn: aCollection].
 	
-	(topeGuardado copyFrom: 1 to: aString size) = aString ifTrue: [aCollection add: topeGuardado].
+	(actualTop copyFrom: 1 to: aString size) = aString ifTrue: [aCollection add: actualTop].
 	
-	aStack push: topeGuardado.	
+	aStack push: actualTop.	
 ! !
-
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:18:50'!
-stringHasASpaceError
-	
-	^ 'String should not have spaces'! !
 
 
 !classDefinition: #Top category: 'Stack-Exercise'!
