@@ -91,7 +91,7 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:26'!
+!OOStackTest methodsFor: 'test' stamp: 'SG 5/14/2022 13:28:47'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
@@ -143,6 +143,127 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:22:38'!
+test01StringShouldNotBeEmpty
+	| stack  |
+	
+	stack := OOStack new.
+	
+	self
+		should: [ SentenceFinderByPrefix find: '' in: stack. ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix emptyStringError ]
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:23:22'!
+test02StringShouldNotHaveSpaces
+	| stack  |
+	
+	stack := OOStack new.
+	
+	self
+		should: [ SentenceFinderByPrefix find: 'hola a todos' in: stack. ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix stringHasASpaceError ]
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:59:51'!
+test03SentenceFinderIsCaseSensitive
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'Hola'.
+	stack push: 'hola'.
+	
+	self assert: (SentenceFinderByPrefix find: 'ho' in: stack) = (Set with: 'hola').
+	self assert: (SentenceFinderByPrefix find: 'Ho' in: stack) = (Set with: 'Hola').
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:03:23'!
+test04StackShouldMaintainOrder
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'Hola'.
+	stack push: 'Chau'.
+	
+	SentenceFinderByPrefix find: 'la' in: stack.
+	
+	self assert: stack pop = 'Chau'.
+	self assert: stack pop = 'Hola'.! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 16:01:21'!
+test05StackWithOneElementReturnsThatElement
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'Hola'.
+	
+	self assert: (SentenceFinderByPrefix find: 'Ho' in: stack) = (Set with: 'Hola').
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:40:37'!
+test06StackWithVariousElementsReturnsOneElement
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'winter is coming'.
+	stack push: 'winning is everything'.
+	stack push: 'The winds of Winter'.
+	stack push: 'Winter is here'.
+	
+	self assert: (SentenceFinderByPrefix find: 'Wint' in: stack) = (Set with: 'Winter is here').
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:44:37'!
+test07StackWithMoreThanOneElementReturnsMoreThanOneElement
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'Wint is coming'.
+	stack push: 'winning is everything'.
+	stack push: 'The winds of Winter'.
+	stack push: 'Winter is here'.
+	
+	self assert: (SentenceFinderByPrefix find: 'Wint' in: stack) = (Set with: 'Winter is here' with:'Wint is coming').
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:57:02'!
+test08StackDoesNotMatchAnyElementReturnsEmptySet
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'Wint is coming'.
+	stack push: 'winning is everything'.
+	stack push: 'The winds of Winter'.
+	stack push: 'Winter is here'.
+	
+	self assert: (SentenceFinderByPrefix find: 'apple' in: stack) = (Set new).
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:55:25'!
+test09StringInElementsButNotPrefixReturnsEmptySet
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'Wint is coming'.
+	stack push: 'winning is everything'.
+	stack push: 'The winds of Winter'.
+	stack push: 'Winter is here'.
+	
+	self assert: (SentenceFinderByPrefix find: 'here' in: stack) = (Set new).
+	
+	! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
@@ -208,6 +329,47 @@ Object subclass: #SentenceFinderByPrefix
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
+SentenceFinderByPrefix class
+	instanceVariableNames: ''!
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:06:59'!
+emptyStringError
+	
+	^ 'String is empty'! !
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:39:53'!
+find: aString in: aStack
+	| resultado tempStack |
+	
+	aString size = 0 ifTrue: [self error: self emptyStringError].
+	(aString includesSubString: ' ') ifTrue: [self error: self stringHasASpaceError].
+	
+	resultado := Set new.
+	tempStack := OOStack new.
+	
+	[aStack isEmpty] whileFalse: [
+		((aStack top copyFrom: 1 to: aString size) = aString) ifTrue: [resultado add: aStack top].
+		tempStack push: aStack pop.].
+	
+	
+	"tempStack push: aStack pop.	
+	(tempStack top includesSubString: aString) ifTrue: [resultado add: tempStack top ]."
+	
+	"aStack push: tempStack pop.	"
+	[tempStack isEmpty] whileFalse: [
+		aStack push: tempStack pop.	
+		].
+	
+	^resultado! !
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:18:50'!
+stringHasASpaceError
+	
+	^ 'String should not have spaces'! !
 
 
 !classDefinition: #Top category: 'Stack-Exercise'!
