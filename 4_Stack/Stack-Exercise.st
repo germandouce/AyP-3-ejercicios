@@ -341,30 +341,31 @@ emptyStringError
 	
 	^ 'String is empty'! !
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:39:53'!
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 16:19:44'!
 find: aString in: aStack
-	| resultado tempStack |
+	| resultado |
 	
 	aString size = 0 ifTrue: [self error: self emptyStringError].
 	(aString includesSubString: ' ') ifTrue: [self error: self stringHasASpaceError].
 	
 	resultado := Set new.
-	tempStack := OOStack new.
 	
-	[aStack isEmpty] whileFalse: [
-		((aStack top copyFrom: 1 to: aString size) = aString) ifTrue: [resultado add: aStack top].
-		tempStack push: aStack pop.].
-	
-	
-	"tempStack push: aStack pop.	
-	(tempStack top includesSubString: aString) ifTrue: [resultado add: tempStack top ]."
-	
-	"aStack push: tempStack pop.	"
-	[tempStack isEmpty] whileFalse: [
-		aStack push: tempStack pop.	
-		].
+	self find: aString in: aStack andSavesIn: resultado.
 	
 	^resultado! !
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 16:36:54'!
+find: aString in: aStack andSavesIn: aCollection
+	| topeGuardado |
+	
+	topeGuardado := aStack pop.
+	
+	aStack isEmpty ifFalse: [self find: aString in: aStack andSavesIn: aCollection].
+	
+	(topeGuardado copyFrom: 1 to: aString size) = aString ifTrue: [aCollection add: topeGuardado].
+	
+	aStack push: topeGuardado.	
+! !
 
 !SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:18:50'!
 stringHasASpaceError
