@@ -144,35 +144,29 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:22:38'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:25:39'!
 test01StringShouldNotBeEmpty
-	| stack  |
-	
-	stack := OOStack new.
 	
 	self
-		should: [ SentenceFinderByPrefix find: '' in: stack. ]
+		should: [ SentenceFinderByPrefix find: '' in: OOStack new. ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = SentenceFinderByPrefix emptyStringError ]
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:23:22'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:25:57'!
 test02StringShouldNotHaveSpaces
-	| stack  |
-	
-	stack := OOStack new.
 	
 	self
-		should: [ SentenceFinderByPrefix find: 'hola a todos' in: stack. ]
+		should: [ SentenceFinderByPrefix find: 'hola a todos' in: OOStack new.. ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = SentenceFinderByPrefix stringHasASpaceError ]
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:59:51'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:26:48'!
 test03SentenceFinderIsCaseSensitive
 	| stack |
 	
@@ -291,9 +285,10 @@ pop
 		
 	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/13/2022 18:22:13'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:29:11'!
 push: anObject
 	|newTop|
+	
 	newTop := RealTop new.
 	
 	newTop data: anObject.
@@ -330,6 +325,32 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:23:37'!
+find: aString in: aStack
+	| result |
+	
+	aString size = 0 ifTrue: [self error: self class emptyStringError].
+	(aString includesSubString: ' ') ifTrue: [self error: self class stringHasASpaceError].
+	
+	result := Set new.
+	
+	self find: aString in: aStack andSavesIn: result.
+	
+	^result! !
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:23:53'!
+find: aString in: aStack andSavesIn: aCollection
+	| actualTop |
+	
+	actualTop := aStack pop.
+	
+	aStack isEmpty ifFalse: [self find: aString in: aStack andSavesIn: aCollection].
+	
+	(actualTop commonPrefixWith: aString) = aString size ifTrue: [aCollection add: actualTop].
+	
+	aStack push: actualTop.	
+! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
@@ -361,7 +382,7 @@ find: aString in: aStack
 	^result! !
 
 
-!SentenceFinderByPrefix class methodsFor: 'operations - private' stamp: 'SG 5/14/2022 16:56:23'!
+!SentenceFinderByPrefix class methodsFor: 'operations - private' stamp: 'SG 5/15/2022 14:19:36'!
 find: aString in: aStack andSavesIn: aCollection
 	| actualTop |
 	
@@ -369,7 +390,7 @@ find: aString in: aStack andSavesIn: aCollection
 	
 	aStack isEmpty ifFalse: [self find: aString in: aStack andSavesIn: aCollection].
 	
-	(actualTop copyFrom: 1 to: aString size) = aString ifTrue: [aCollection add: actualTop].
+	(actualTop commonPrefixWith: aString) = aString size ifTrue: [aCollection add: actualTop].
 	
 	aStack push: actualTop.	
 ! !
