@@ -5,7 +5,7 @@ TestCase subclass: #OOStackTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackTest methodsFor: 'test' stamp: 'HernanWilkinson 5/7/2012 11:30'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'HernanWilkinson 5/7/2012 11:30'!
 test01StackShouldBeEmptyWhenCreated
 
 	| stack |
@@ -14,7 +14,7 @@ test01StackShouldBeEmptyWhenCreated
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:29:55'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'NR 5/13/2020 13:29:55'!
 test02PushAddElementsToTheStack
 
 	| stack |
@@ -24,7 +24,7 @@ test02PushAddElementsToTheStack
 	
 	self deny: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:01'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'NR 5/13/2020 13:30:01'!
 test03PopRemovesElementsFromTheStack
 
 	| stack |
@@ -35,7 +35,7 @@ test03PopRemovesElementsFromTheStack
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:09'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'NR 5/13/2020 13:30:09'!
 test04PopReturnsLastPushedObject
 
 	| stack pushedObject |
@@ -46,7 +46,7 @@ test04PopReturnsLastPushedObject
 	
 	self assert: stack pop = pushedObject! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:48'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'NR 5/13/2020 13:30:48'!
 test05StackBehavesLIFO
 
 	| stack firstPushedObject secondPushedObject |
@@ -63,7 +63,7 @@ test05StackBehavesLIFO
 	self assert: stack isEmpty 
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:20'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'NR 5/13/2020 13:30:20'!
 test06TopReturnsLastPushedObject
 
 	| stack pushedObject |
@@ -76,7 +76,7 @@ test06TopReturnsLastPushedObject
 	self assert: stack top = pushedObject.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:24'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'NR 5/13/2020 13:30:24'!
 test07TopDoesNotRemoveObjectFromStack
 
 	| stack pushedObject |
@@ -91,7 +91,7 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'SG 5/14/2022 13:28:47'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'SG 5/14/2022 13:28:47'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
@@ -105,7 +105,7 @@ test08CanNotPopWhenThereAreNoObjectsInTheStack
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:31'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'NR 5/13/2020 13:30:31'!
 test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 
 	| stack  |
@@ -122,7 +122,7 @@ test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:44'!
+!OOStackTest methodsFor: 'test - unlimited stack' stamp: 'HAW 4/14/2017 22:48:44'!
 test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
@@ -136,6 +136,78 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 		
 ! !
 
+
+!OOStackTest methodsFor: 'test - limited stack' stamp: 'SG 5/16/2022 13:42:31'!
+test11LimitedStackShouldHaveAsManyFreeSpacesAsDeclared
+
+	| stack |
+	
+	stack := OOStack new withLimit: 2.
+	
+	self assert: stack freeSpace = 2.! !
+
+!OOStackTest methodsFor: 'test - limited stack' stamp: 'SG 5/16/2022 13:43:08'!
+test12LimitedStackShouldHaveOneSpaceLessWhenPushed
+
+	| stack |
+	
+	stack := OOStack new withLimit: 2.
+	stack push: 'Spring'.
+	
+	self assert: stack freeSpace = 1.! !
+
+!OOStackTest methodsFor: 'test - limited stack' stamp: 'SG 5/16/2022 13:46:42'!
+test13FullLimitedStackShouldBeFull
+
+	| stack |
+	
+	stack := OOStack new withLimit: 2.
+	stack push: 'Spring'.
+	stack push: 'Summer'.
+	
+	self assert: stack freeSpace = 0.! !
+
+!OOStackTest methodsFor: 'test - limited stack' stamp: 'SG 5/16/2022 13:48:24'!
+test14FullLimitedStackShouldNotSaveMoreData
+
+	| stack |
+	
+	stack := OOStack new withLimit: 2.
+	stack push: 'Spring'.
+	stack push: 'Summer'.
+	
+	self
+		should: [ stack push: 'Fall' ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOStack stackFullErrorDescription ]! !
+
+!OOStackTest methodsFor: 'test - limited stack' stamp: 'SG 5/16/2022 13:49:48'!
+test15FullLimitedStackShouldHaveOneSpaceWhenPoped
+
+	| stack |
+	
+	stack := OOStack new withLimit: 2.
+	stack push: 'Spring'.
+	stack push: 'Summer'.
+	
+	stack pop.
+	
+	self assert: stack freeSpace = 1.! !
+
+!OOStackTest methodsFor: 'test - limited stack' stamp: 'SG 5/16/2022 13:55:55'!
+test16UnlimitedStackChecksFreeSpaceShouldRaiseError
+
+	| stack |
+	
+	stack := OOStack new.
+	
+	self
+		should: [ stack freeSpace ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOStack limitedStackMethodOnlyDescription ]! !
+
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
@@ -144,7 +216,7 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:25:39'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/15/2022 14:25:39'!
 test01StringShouldNotBeEmpty
 	
 	self
@@ -155,7 +227,7 @@ test01StringShouldNotBeEmpty
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:25:57'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/15/2022 14:25:57'!
 test02StringShouldNotHaveSpaces
 	
 	self
@@ -166,7 +238,7 @@ test02StringShouldNotHaveSpaces
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:26:48'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/15/2022 14:26:48'!
 test03SentenceFinderIsCaseSensitive
 	| stack |
 	
@@ -179,7 +251,7 @@ test03SentenceFinderIsCaseSensitive
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 17:00:14'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/14/2022 17:00:14'!
 test04StackShouldMaintainOrderAfterSearch
 	| stack |
 	
@@ -192,7 +264,7 @@ test04StackShouldMaintainOrderAfterSearch
 	self assert: stack pop = 'Chau'.
 	self assert: stack pop = 'Hola'.! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 16:01:21'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/14/2022 16:01:21'!
 test05StackWithOneElementReturnsThatElement
 	| stack |
 	
@@ -203,7 +275,7 @@ test05StackWithOneElementReturnsThatElement
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 17:03:26'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/14/2022 17:03:26'!
 test06StackWithMoreThanOneElementReturnsOneElement
 	| stack |
 	
@@ -217,7 +289,7 @@ test06StackWithMoreThanOneElementReturnsOneElement
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 17:01:29'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/14/2022 17:01:29'!
 test07StackWithMoreThanOneElementCanReturnMoreThanOneElement
 	| stack |
 	
@@ -231,7 +303,7 @@ test07StackWithMoreThanOneElementCanReturnMoreThanOneElement
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 15:57:02'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/14/2022 15:57:02'!
 test08StackDoesNotMatchAnyElementReturnsEmptySet
 	| stack |
 	
@@ -245,7 +317,7 @@ test08StackDoesNotMatchAnyElementReturnsEmptySet
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'SG 5/14/2022 17:09:37'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/14/2022 17:09:37'!
 test09ElementsPrefixDoesNotMatchStringReturnsEmptySet
 	| stack |
 	
@@ -259,13 +331,32 @@ test09ElementsPrefixDoesNotMatchStringReturnsEmptySet
 	
 	! !
 
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'SG 5/16/2022 14:00:13'!
+test10StackWithElementsBegginingWithSpaceReturnsEmpty
+	| stack |
+	
+	stack := OOStack new.
+	stack push: ' winter is coming'.
+	stack push: ' wintor is everything'.
+	stack push: ' Wintar of Winter'.
+	stack push: ' Wintur is here'.
+	
+	self assert: (SentenceFinderByPrefix find: 'Wint' in: stack) = Set new.
+	
+	! !
+
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'tope'
+	instanceVariableNames: 'tope stackLimit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/16/2022 13:40:50'!
+freeSpace
+	stackLimit isNil ifTrue: [self error: self class limitedStackMethodOnlyDescription].
+	^(stackLimit - tope numberTop)! !
 
 !OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/13/2022 17:35:17'!
 initialize
@@ -285,9 +376,11 @@ pop
 		
 	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:29:11'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/16/2022 12:53:44'!
 push: anObject
 	|newTop|
+	
+	tope numberTop = stackLimit ifTrue: [self error: self class stackFullErrorDescription].
 	
 	newTop := RealTop new.
 	
@@ -306,16 +399,30 @@ top
 	^tope data
 	! !
 
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/16/2022 12:48:53'!
+withLimit: aNumber
+	stackLimit := aNumber! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'OOStack class' category: 'Stack-Exercise'!
 OOStack class
 	instanceVariableNames: ''!
 
+!OOStack class methodsFor: 'error descriptions' stamp: 'SG 5/16/2022 13:41:39'!
+limitedStackMethodOnlyDescription
+	
+	^ 'This method is only for Limited Stacks'! !
+
 !OOStack class methodsFor: 'error descriptions' stamp: 'HernanWilkinson 5/7/2012 11:51'!
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+!OOStack class methodsFor: 'error descriptions' stamp: 'SG 5/16/2022 12:52:49'!
+stackFullErrorDescription
+	
+	^ 'Stack is full'! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
@@ -324,32 +431,6 @@ Object subclass: #SentenceFinderByPrefix
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
-
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:23:37'!
-find: aString in: aStack
-	| result |
-	
-	aString size = 0 ifTrue: [self error: self class emptyStringError].
-	(aString includesSubString: ' ') ifTrue: [self error: self class stringHasASpaceError].
-	
-	result := Set new.
-	
-	self find: aString in: aStack andSavesIn: result.
-	
-	^result! !
-
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'SG 5/15/2022 14:23:53'!
-find: aString in: aStack andSavesIn: aCollection
-	| actualTop |
-	
-	actualTop := aStack pop.
-	
-	aStack isEmpty ifFalse: [self find: aString in: aStack andSavesIn: aCollection].
-	
-	(actualTop commonPrefixWith: aString) = aString size ifTrue: [aCollection add: actualTop].
-	
-	aStack push: actualTop.	
-! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
