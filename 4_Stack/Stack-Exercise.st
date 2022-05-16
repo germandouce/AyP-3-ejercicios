@@ -353,20 +353,7 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/16/2022 13:40:50'!
-freeSpace
-	stackLimit isNil ifTrue: [self error: self class limitedStackMethodOnlyDescription].
-	^(stackLimit - tope numberTop)! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/13/2022 17:35:17'!
-initialize
-	tope := NullTop new.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/13/2022 17:35:04'!
-isEmpty
-	^tope isEmpty! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/13/2022 18:17:18'!
+!OOStack methodsFor: 'operations' stamp: 'SG 5/13/2022 18:17:18'!
 pop
 	|removedTop|
 	removedTop := tope.
@@ -376,7 +363,7 @@ pop
 		
 	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/16/2022 12:53:44'!
+!OOStack methodsFor: 'operations' stamp: 'SG 5/16/2022 12:53:44'!
 push: anObject
 	|newTop|
 	
@@ -390,16 +377,31 @@ push: anObject
 	
 	tope := newTop.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/13/2022 18:18:47'!
-size
-	^tope numberTop.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/13/2022 18:18:15'!
+!OOStack methodsFor: 'operations' stamp: 'SG 5/13/2022 18:18:15'!
 top
 	^tope data
 	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'SG 5/16/2022 12:48:53'!
+
+!OOStack methodsFor: 'checking' stamp: 'SG 5/16/2022 13:40:50'!
+freeSpace
+	stackLimit isNil ifTrue: [self error: self class limitedStackMethodOnlyDescription].
+	^(stackLimit - tope numberTop)! !
+
+!OOStack methodsFor: 'checking' stamp: 'SG 5/13/2022 17:35:04'!
+isEmpty
+	^tope isEmpty! !
+
+!OOStack methodsFor: 'checking' stamp: 'SG 5/13/2022 18:18:47'!
+size
+	^tope numberTop.! !
+
+
+!OOStack methodsFor: 'creation' stamp: 'SG 5/13/2022 17:35:17'!
+initialize
+	tope := NullTop new.! !
+
+!OOStack methodsFor: 'creation' stamp: 'SG 5/16/2022 12:48:53'!
 withLimit: aNumber
 	stackLimit := aNumber! !
 
@@ -484,7 +486,7 @@ Object subclass: #Top
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!Top methodsFor: 'as yet unclassified' stamp: 'SG 5/13/2022 18:07:13'!
+!Top methodsFor: 'creation' stamp: 'SG 5/13/2022 18:07:13'!
 initialize
 	previousTop := nil.
 	data := nil.
