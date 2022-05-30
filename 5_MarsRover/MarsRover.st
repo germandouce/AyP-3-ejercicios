@@ -1,36 +1,40 @@
-!classDefinition: #MarsRoverTests category: 'MarsRover'!
-TestCase subclass: #MarsRoverTests
+!classDefinition: #MarsRoverTest category: 'MarsRover'!
+TestCase subclass: #MarsRoverTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/29/2022 17:26:02'!
-test01WhenMarsRoverIsCreatedItsPositionIs00
+!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:46:58'!
+test01
 	| marsRover |
-	marsRover _ MarsRover new.
-	self assert: ( marsRover position = (0@0) )! !
+	marsRover := MarsRover new.
+	
+	self assert: marsRover position = (0@0)! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/29/2022 18:04:33'!
-test02WhenForwardCommandIsSentMarsRoverMovesForward1Unit
+!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:51:59'!
+test02
 	| marsRover |
-	marsRover _ MarsRover new.
+	marsRover := MarsRover new.
 	marsRover receiveCommand: 'f'.
-	self assert: ( marsRover position = (1@0) )! !
+	
+	self assert: marsRover position = (1@0)! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/29/2022 18:04:44'!
-test03WhenBackwardsCommandIsSentMarsRoverMovesBackwards1Unit
+!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:59:24'!
+test03
 	| marsRover |
-	marsRover _ MarsRover new.
+	marsRover := MarsRover new.
 	marsRover receiveCommand: 'b'.
-	self assert: ( marsRover position = (-1@0) )! !
+	
+	self assert: marsRover position = (-1@0)! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/29/2022 18:29:49'!
-test04WhenMoreMoreThan1CommandIsSentMarsRoverMovesManyUnits
+!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 18:10:04'!
+test04
 	| marsRover |
-	marsRover _ MarsRover new.
-	marsRover receiveCommand: 'fff' .
-	self assert: ( marsRover position = (3@0) )! !
+	marsRover := MarsRover new.
+	marsRover receiveCommand: 'fff'.
+	
+	self assert: marsRover position = (3@0)! !
 
 
 !classDefinition: #Command category: 'MarsRover'!
@@ -49,17 +53,93 @@ name
 	! !
 
 
-!classDefinition: #MarsRover category: 'MarsRover'!
-Object subclass: #MarsRover
-	instanceVariableNames: 'positionX positionY'
+!classDefinition: #Direction category: 'MarsRover'!
+Object subclass: #Direction
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'Movement' stamp: 'GD 5/29/2022 18:04:53'!
-moveBackwards
-	positionX := positionX - 1.
-		! !
+!Direction methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:45:58'!
+moveBackward: aMarsRover
+	self subclassResponsibility ! !
+
+!Direction methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:45:53'!
+moveForward: aMarsRover
+	self subclassResponsibility ! !
+
+
+!classDefinition: #East category: 'MarsRover'!
+Direction subclass: #East
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+
+!classDefinition: #North category: 'MarsRover'!
+Direction subclass: #North
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!North methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:40:55'!
+moveBackward: aMarsRover
+	aMarsRover moveX: -1
+	! !
+
+!North methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:38:37'!
+moveForward: aMarsRover
+	aMarsRover moveX: 1
+	! !
+
+
+!classDefinition: #South category: 'MarsRover'!
+Direction subclass: #South
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!South methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:41:59'!
+moveBackward: aMarsRover
+	aMarsRover moveX: 1
+	! !
+
+!South methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:42:09'!
+moveForward: aMarsRover
+	aMarsRover moveX: 1
+	! !
+
+
+!classDefinition: #West category: 'MarsRover'!
+Direction subclass: #West
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+
+!classDefinition: #MarsRover category: 'MarsRover'!
+Object subclass: #MarsRover
+	instanceVariableNames: 'positionX positionY direction'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'SG 5/29/2022 18:02:06'!
+moveBackward
+	positionX := positionX -1! !
+
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:38:17'!
+moveX: aNumber
+	positionX := positionX + aNumber! !
+
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:38:24'!
+moveY: aNumber
+	positionY := positionY + aNumber! !
+
 
 !MarsRover methodsFor: 'Movement' stamp: 'GD 5/29/2022 18:00:32'!
 moveForward
@@ -70,7 +150,7 @@ moveForward
 position
 	^positionX@positionY! !
 
-!MarsRover methodsFor: 'Movement' stamp: 'GD 5/29/2022 19:24:02'!
+!MarsRover methodsFor: 'Movement' stamp: 'SG 5/30/2022 13:39:24'!
 receiveCommand: aCommand
 	
 	"
@@ -89,13 +169,14 @@ receiveCommand: aCommand
 	 "
 	aCommand do: [:ALetter |
 		Transcript show: ALetter. 
-		ALetter asString = 'f' ifTrue: [self moveForward].
-		ALetter asString = 'b' ifTrue: [self moveBackwards].
+		ALetter asString = 'f' ifTrue: [direction moveForward: self].
+		ALetter asString = 'b' ifTrue: [self moveBackward].
 		].
 	! !
 
 
-!MarsRover methodsFor: 'Initialization' stamp: 'GD 5/29/2022 17:44:58'!
+!MarsRover methodsFor: 'Initialization' stamp: 'SG 5/30/2022 13:35:00'!
 initialize
 	positionX := 0.
-	positionY := 0.! !
+	positionY := 0.
+	direction := North new.! !
