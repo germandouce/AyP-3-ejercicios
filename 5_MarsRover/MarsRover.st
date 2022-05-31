@@ -1,3 +1,42 @@
+!classDefinition: #MarsRoverTest category: 'MarsRover'!
+TestCase subclass: #MarsRoverTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:46:58'!
+test01
+	| marsRover |
+	marsRover := MarsRover new.
+	
+	self assert: marsRover position = (0@0)! !
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:51:59'!
+test02
+	| marsRover |
+	marsRover := MarsRover new.
+	marsRover receiveCommand: 'f'.
+	
+	self assert: marsRover position = (1@0)! !
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:59:24'!
+test03
+	| marsRover |
+	marsRover := MarsRover new.
+	marsRover receiveCommand: 'b'.
+	
+	self assert: marsRover position = (-1@0)! !
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 18:10:04'!
+test04
+	| marsRover |
+	marsRover := MarsRover new.
+	marsRover receiveCommand: 'fff'.
+	
+	self assert: marsRover position = (3@0)! !
+
+
 !classDefinition: #MarsRoverTests category: 'MarsRover'!
 TestCase subclass: #MarsRoverTests
 	instanceVariableNames: ''
@@ -81,7 +120,7 @@ test10WhenUnknownSingleCommandIsReceivedMarsRoverDoesNotMove
 	marsRover receiveCommand: 'w' .
 	self assert: (marsRover position = (0@0) ).! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 15:12:02'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 21:12:58'!
 test11WhenUnknownCommandInLargerSequenceIsReceivedMarsRoverStopMoving
 	| marsRover |
 	
@@ -234,10 +273,30 @@ rotateRight: aMarsRover
 
 !classDefinition: #MarsRover category: 'MarsRover'!
 Object subclass: #MarsRover
-	instanceVariableNames: 'positionX positionY direction'
+	instanceVariableNames: 'positionX positionY direction commands'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
+
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 16:25:27'!
+createCommandDictionary
+	|dict|
+	dict := Dictionary new.
+	dict at: 'f' put: (direction moveForward: self).
+	dict at: 'b' put: (direction moveBackward: self).
+	dict at: 'r' put: (direction rotateRight: self).
+	dict at: 'l' put: (direction rotateLeft: self).
+	
+	^dict! !
+
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:38:17'!
+moveX: aNumber
+	positionX := positionX + aNumber! !
+
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:38:24'!
+moveY: aNumber
+	positionY := positionY + aNumber! !
+
 
 !MarsRover methodsFor: 'Movement' stamp: 'GD 5/30/2022 14:10:45'!
 changeDirectionTo: aDirection
@@ -251,31 +310,28 @@ direction
 position
 	^positionX@positionY! !
 
-!MarsRover methodsFor: 'Movement' stamp: 'GD 5/30/2022 15:25:35'!
+!MarsRover methodsFor: 'Movement' stamp: 'SG 5/30/2022 21:11:40'!
 receiveCommand: aCommand
 	
 	aCommand do: [:ALetter |
-		
-		Transcript show: ALetter. 
-		ALetter asString = 'f' ifTrue: [direction moveForward: self]
-			ifFalse: [ALetter asString = 'b' ifTrue: [direction moveBackward: self]	
-				ifFalse: [ALetter asString = 'r' ifTrue: [direction rotateRight: self]		
-					ifFalse:[ALetter asString = 'l' ifTrue: [direction rotateLeft: self]
-						ifFalse:[^0] ]
-		]]]! !
+		('fbrl' includesSubString: ALetter asString) ifFalse:[^0].
+		ALetter asString = 'f' ifTrue: [direction moveForward: self].
+		ALetter asString = 'b' ifTrue: [direction moveBackward: self]	.
+		ALetter asString = 'r' ifTrue: [direction rotateRight: self]		.
+		ALetter asString = 'l' ifTrue: [direction rotateLeft: self]
+		]
+	
+	
+	
+	
+	"aCommand do:[:aLetter |
+		commands methodDictionary at: aLetter
+		]"! !
 
 
-!MarsRover methodsFor: 'Initialization' stamp: 'SG 5/30/2022 13:35:00'!
+!MarsRover methodsFor: 'Initialization' stamp: 'SG 5/30/2022 15:46:02'!
 initialize
 	positionX := 0.
 	positionY := 0.
-	direction := North new.! !
-
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:38:17'!
-moveX: aNumber
-	positionX := positionX + aNumber! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 13:38:24'!
-moveY: aNumber
-	positionY := positionY + aNumber! !
+	direction := North new.
+	commands := self createCommandDictionary.! !
