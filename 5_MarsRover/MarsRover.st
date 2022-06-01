@@ -1,42 +1,3 @@
-!classDefinition: #MarsRoverTest category: 'MarsRover'!
-TestCase subclass: #MarsRoverTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'MarsRover'!
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:46:58'!
-test01
-	| marsRover |
-	marsRover := MarsRover new.
-	
-	self assert: marsRover position = (0@0)! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:51:59'!
-test02
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover receiveCommand: 'f'.
-	
-	self assert: marsRover position = (1@0)! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 17:59:24'!
-test03
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover receiveCommand: 'b'.
-	
-	self assert: marsRover position = (-1@0)! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'SG 5/29/2022 18:10:04'!
-test04
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover receiveCommand: 'fff'.
-	
-	self assert: marsRover position = (3@0)! !
-
-
 !classDefinition: #MarsRoverTests category: 'MarsRover'!
 TestCase subclass: #MarsRoverTests
 	instanceVariableNames: ''
@@ -44,105 +5,176 @@ TestCase subclass: #MarsRoverTests
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 14:39:40'!
+!MarsRoverTests methodsFor: 'MovementTests' stamp: 'GD 5/30/2022 14:39:40'!
 test01WhenMarsRoverIsCreatedPositionIs00
 	| marsRover |
 	marsRover _ MarsRover new.
 	self assert: ( marsRover position = (0@0) )! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 14:38:23'!
+!MarsRoverTests methodsFor: 'MovementTests' stamp: 'GD 5/30/2022 14:38:23'!
 test02WhenForwardCommandIsSentMarsRoverMovesForward1Unit
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveCommand: 'f'.
 	self assert: ( marsRover position = (0@1) )! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 14:38:40'!
+!MarsRoverTests methodsFor: 'MovementTests' stamp: 'GD 5/30/2022 14:38:40'!
 test03WhenBackwardsCommandIsSentMarsRoverMovesBackwards1Unit
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveCommand: 'b'.
 	self assert: ( marsRover position = (0@-1) )! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 14:38:52'!
-test04WhenMoreMoreThan1CommandIsSentMarsRoverMovesManyUnits
+!MarsRoverTests methodsFor: 'MovementTests' stamp: 'GD 6/1/2022 13:58:47'!
+test04WhenMoreThan1CommandIsSentMarsRoverMovesManyUnits
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveCommand: 'fff' .
 	self assert: ( marsRover position = (0@3) )! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 14:17:14'!
-test05WhenCommandRightIsSentAndActualDirectionIsNorthDirectionTurnsEast
+!MarsRoverTests methodsFor: 'MovementTests' stamp: 'GD 6/1/2022 13:57:38'!
+test05WhenTwoDifferentCommandsAreSentMarsRoverMovesCorrectly
 	| marsRover |
 	marsRover _ MarsRover new.
-	marsRover receiveCommand: 'r' .
-	self assert: ( marsRover direction class = East)! !
+	marsRover receiveCommand: 'fbbf' .
+	self assert: ( marsRover position = (0@0) )! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 14:17:26'!
+
+!MarsRoverTests methodsFor: 'RotateTests' stamp: 'GD 5/30/2022 14:17:26'!
 test06WhenCommandLeftIsSentAndActualDirectionIsNorthDirectionTurnsWest
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveCommand: 'l' .
 	self assert: ( marsRover direction class = West)! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 14:26:58'!
-test07WhenARotateCommandIsSentFourTimesMarsRoverStaysOnDirection
+!MarsRoverTests methodsFor: 'RotateTests' stamp: 'GD 6/1/2022 14:15:07'!
+test07WhenCommandLeftIsSentTwoTimesAndActualDirectionIsNorthDirectionTurnsSouth
 	| marsRover |
-	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'll' .
+	self assert: ( marsRover direction class = South)! !
+
+!MarsRoverTests methodsFor: 'RotateTests' stamp: 'GD 6/1/2022 14:14:25'!
+test08WhenCommandLeftIsSentThreeTimesAndActualDirectionIsNorthDirectionTurnsEast
+	| marsRover |
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'lll'.
+	self assert: ( marsRover direction class = East)! !
+
+!MarsRoverTests methodsFor: 'RotateTests' stamp: 'GD 6/1/2022 14:17:14'!
+test09WhenCommandLeftIsSentFourTimesAndActualDirectionIsNorthDirectionIsNorth
+	| marsRover |
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'IIII'.
+	self assert: ( marsRover direction class = North)! !
+
+!MarsRoverTests methodsFor: 'RotateTests' stamp: 'GD 6/1/2022 14:17:54'!
+test10WhenCommandRightIsSentAndActualDirectionIsNorthDirectionTurnsEast
+	| marsRover |
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'r' .
+	self assert: ( marsRover direction class = East)! !
+
+!MarsRoverTests methodsFor: 'RotateTests' stamp: 'GD 6/1/2022 14:19:22'!
+test11WhenCommandRightIsSentTwoTimesAndActualDirectionIsNorthDirectionTurnsSouth	| marsRover |
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'rr' .
+	self assert: ( marsRover direction class = South)! !
+
+!MarsRoverTests methodsFor: 'RotateTests' stamp: 'GD 6/1/2022 14:20:27'!
+test12WhenCommandRightIsSentThreeTimesAndActualDirectionIsNorthDirectionTurnsWest	| marsRover |
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'rrr' .
+	self assert: ( marsRover direction class = West)! !
+
+!MarsRoverTests methodsFor: 'RotateTests' stamp: 'GD 6/1/2022 14:26:35'!
+test13WhenCommandRightIsSentFourTimesAndActualDirectionIsNorthDirectionIsNorth
+	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveCommand: 'rrrr' .
-	self assert: ( marsRover direction class = North).
-	marsRover receiveCommand: 'llll'.
-	self assert: ( marsRover direction class = North).
-! !
+	self assert: ( marsRover direction class = North)! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 14:41:26'!
-test08WhenCommandsSequenceRFIsSentMarsRoverPositionIs10
+
+!MarsRoverTests methodsFor: 'UnknownCommandsTests' stamp: 'GD 6/1/2022 15:02:56'!
+test20WhenUnknownSingleAlphanumericCommandIsSentMarsRoverDoesNotMove
 	| marsRover |
 	
 	marsRover _ MarsRover new.
-	marsRover receiveCommand: 'rf' .
-	self assert: (marsRover position = (1@0) ).! !
-
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 15:05:03'!
-test09WhenLongCommandIsSentMarsRoverMovesCorrectly
-	| marsRover |
-	
-	marsRover _ MarsRover new.
-	marsRover receiveCommand: 'frflflfflffrfflflfffffbblbr' .
-	self assert: (marsRover position = (0@-2) ).! !
-
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'GD 5/30/2022 15:10:30'!
-test10WhenUnknownSingleCommandIsReceivedMarsRoverDoesNotMove
-	| marsRover |
-	
-	marsRover _ MarsRover new.
-	marsRover receiveCommand: 'w' .
+	marsRover receiveCommand: 's' .
 	self assert: (marsRover position = (0@0) ).! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'SG 5/30/2022 21:12:58'!
-test11WhenUnknownCommandInLargerSequenceIsReceivedMarsRoverStopMoving
+!MarsRoverTests methodsFor: 'UnknownCommandsTests' stamp: 'GD 6/1/2022 14:51:49'!
+test21WhenEmptyCommandIsSentMarsRoverDoesNotMove
+	| marsRover |
+	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: '' .
+	self assert: (marsRover position = (0@0) ).! !
+
+!MarsRoverTests methodsFor: 'UnknownCommandsTests' stamp: 'GD 6/1/2022 15:01:59'!
+test22WhenUnknownCommandInMiddleSequenceIsSentMarsRoverStopsMoving
 	| marsRover |
 	
 	marsRover _ MarsRover new.
 	marsRover receiveCommand: 'f flflfflffrfflflfffffbblbr' .
 	self assert: (marsRover position = (0@1) ).! !
 
-
-!classDefinition: #Command category: 'MarsRover'!
-Object subclass: #Command
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'MarsRover'!
+!MarsRoverTests methodsFor: 'UnknownCommandsTests' stamp: 'GD 6/1/2022 15:04:10'!
+test23WhenUnknownCommandAtStartOfSequenceIsSentMarsRoverDoesNotMove
+	| marsRover |
+	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: '1fflflfflffrfflflfffffbblbr' .
+	self assert: (marsRover position = (0@0) ).! !
 
-!Command methodsFor: 'as yet unclassified' stamp: 'GD 5/29/2022 18:45:45'!
-initialize! !
 
-!Command methodsFor: 'as yet unclassified' stamp: 'GD 5/29/2022 19:00:41'!
-name
-	^'f' asciiValue. 
-	! !
+!MarsRoverTests methodsFor: 'MovementAndRotateTests' stamp: 'GD 6/1/2022 14:29:37'!
+test14WhenCommandsSequenceRFIsSentMarsRoverPositionIs10
+	| marsRover |
+	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'rf' .
+	self assert: (marsRover position = (1@0) ).! !
+
+!MarsRoverTests methodsFor: 'MovementAndRotateTests' stamp: 'GD 6/1/2022 14:31:30'!
+test15WhenCommandsSequenceLFIsSentMarsRoverPositionIsMinus10
+	| marsRover |
+	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'lf' .
+	self assert: (marsRover position = (-1@0) ).! !
+
+!MarsRoverTests methodsFor: 'MovementAndRotateTests' stamp: 'GD 6/1/2022 14:36:58'!
+test16WhenCommandsSequenceRBIsSentMarsRoverPositionIsMinus10
+	| marsRover |
+	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'rb' .
+	self assert: (marsRover position = (-1@0) ).! !
+
+!MarsRoverTests methodsFor: 'MovementAndRotateTests' stamp: 'GD 6/1/2022 14:37:43'!
+test17WhenCommandsSequenceLBIsSentMarsRoverPositionIs10
+	| marsRover |
+	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'lb' .
+	self assert: (marsRover position = ( 1@0) ).! !
+
+!MarsRoverTests methodsFor: 'MovementAndRotateTests' stamp: 'GD 6/1/2022 14:40:42'!
+test18WhenCommandsSequenceLLBIsSentMarsRoverPositionIs01
+	| marsRover |
+	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'llb' .
+	self assert: (marsRover position = ( 0@1) ).! !
+
+!MarsRoverTests methodsFor: 'MovementAndRotateTests' stamp: 'GD 6/1/2022 14:55:00'!
+test19WhenCharacterSequenceCombiningAllFourCommandsIsSentMarsRoverMovesCorrectly
+	| marsRover |
+	
+	marsRover _ MarsRover new.
+	marsRover receiveCommand: 'frflflfflffrfflflfffffbblbr' .
+	self assert: (marsRover position = (0@-2) ).! !
 
 
 !classDefinition: #Direction category: 'MarsRover'!
@@ -310,7 +342,7 @@ direction
 position
 	^positionX@positionY! !
 
-!MarsRover methodsFor: 'Movement' stamp: 'SG 5/30/2022 21:11:40'!
+!MarsRover methodsFor: 'Movement' stamp: 'GD 6/1/2022 13:47:52'!
 receiveCommand: aCommand
 	
 	aCommand do: [:ALetter |
@@ -320,9 +352,6 @@ receiveCommand: aCommand
 		ALetter asString = 'r' ifTrue: [direction rotateRight: self]		.
 		ALetter asString = 'l' ifTrue: [direction rotateLeft: self]
 		]
-	
-	
-	
 	
 	"aCommand do:[:aLetter |
 		commands methodDictionary at: aLetter
