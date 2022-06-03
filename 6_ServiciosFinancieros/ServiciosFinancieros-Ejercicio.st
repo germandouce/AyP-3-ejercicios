@@ -88,6 +88,39 @@ test07AccountKnowsItsTransactions
 	self assert: (account transactions includes: deposit).
 ! !
 
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'SG 6/2/2022 21:50:24'!
+test08
+
+	| withdrawAccount depositAccount |
+	
+	withdrawAccount := ReceptiveAccount new.
+	depositAccount := ReceptiveAccount new.
+	
+	Deposit register: 50 * peso on: withdrawAccount.
+	
+	withdrawAccount transferTo: depositAccount value: 50 * peso.
+	
+	self assert: 0 * peso equals: withdrawAccount balance.
+	self assert: 50 * peso equals: depositAccount balance.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'SG 6/2/2022 23:59:41'!
+test09
+
+	| withdrawAccount depositAccount |
+	
+	withdrawAccount := ReceptiveAccount new.
+	depositAccount := ReceptiveAccount new.
+	
+	
+	
+	self
+		should: [Deposit register: 0 * peso on: withdrawAccount]
+		raise: Error
+		withExceptionDo: [ :anError | self assert: Deposit ceroDepositError ]
+	
+! !
+
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #AccountTransaction
@@ -131,6 +164,11 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'SG 6/2/2022 21:25:38'!
+transactionValue
+
+	^ value! !
+
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
@@ -161,7 +199,12 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
+!Withdraw methodsFor: 'value' stamp: 'SG 6/2/2022 21:25:21'!
+transactionValue
+
+	^ value negated! !
+
+!Withdraw methodsFor: 'value' stamp: 'SG 6/2/2022 21:25:28'!
 value
 
 	^ value! !
@@ -172,10 +215,10 @@ value
 Withdraw class
 	instanceVariableNames: ''!
 
-!Withdraw class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:33'!
+!Withdraw class methodsFor: 'instance creation' stamp: 'SG 6/2/2022 21:15:46'!
 for: aValue
 
-	^ self new initializeFor: aValue ! !
+	^ self new initializeFor: aValue! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -191,10 +234,20 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HAW 5/23/2019 15:19:32'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'SG 6/2/2022 21:48:21'!
 balance
 
-	^transactions sum: [ :aTransaction | aTransaction value ] ifEmpty: [ 0 ]! !
+	^transactions sum: [ :aTransaction | aTransaction transactionValue] ifEmpty: [ 0 ]
+	
+	"^transactions inject: 0 into: [ :balance :aTransaction | aTransaction xxx: balance]"
+	
+	
+	"^transactions sum: [ :aTransaction | 
+		(aTransaction isKindOf: Deposit) 
+		ifTrue: [aTransaction value]
+		ifFalse: [aTransaction value negated]
+		] ifEmpty: [ 0 ]"
+	! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
@@ -212,3 +265,9 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'SG 6/2/2022 21:52:51'!
+transferTo: anAccount value: aValue
+	
+	Withdraw register: aValue on: self.
+	Deposit register: aValue on: anAccount.! !
