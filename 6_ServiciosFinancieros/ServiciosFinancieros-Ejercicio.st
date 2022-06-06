@@ -88,35 +88,34 @@ test07AccountKnowsItsTransactions
 	self assert: (account transactions includes: deposit).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'GD 6/6/2022 15:20:45'!
-test08TransferKnowsItsValue
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'GD 6/6/2022 16:07:38'!
+test08TransferIncreasesBalanceOnReceiverAccountAndDecreasesBalanceOnSenderAccount
 	
 	|account1 account2|
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
 	
-	Transfer register: 100 *peso from: account1 to: account2.
-	
+	self assert: 100* peso equals: (Transfer register: 100 *peso from: account1 to: account2) value.	
+
 	self assert: 100* peso equals: account2 balance.	
-	self assert: -100* peso equals: account1 balance.	! !
+	self assert: -100* peso equals: account1 balance.	
+	! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'SG 6/2/2022 23:59:41'!
-test09
-
-	| withdrawAccount depositAccount |
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'GD 6/6/2022 16:21:22'!
+test09TransferCanNotBeANegativeValue
 	
-	withdrawAccount := ReceptiveAccount new.
-	depositAccount := ReceptiveAccount new.
+	|account1 account2|
+	
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	
+	self should: [Transfer register: -100 *peso from: account1 to: account2]
+	raise: Error
+	withExceptionDo: [:Anerror | self assert: Transfer NegativeTransferValueError equals: Anerror messageText]
 	
 	
-	
-	self
-		should: [Deposit register: 0 * peso on: withdrawAccount]
-		raise: Error
-		withExceptionDo: [ :anError | self assert: Deposit ceroDepositError ]
-	
-! !
+	! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -206,19 +205,30 @@ transactionValueFor: anAccount
 		^value
 	]! !
 
+!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:46:50'!
+value
+	^value! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Transfer class' category: 'ServiciosFinancieros-Ejercicio'!
 Transfer class
 	instanceVariableNames: ''!
 
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:03:24'!
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 16:21:20'!
+NegativeTransferValueError
+	^'transfer value cannot be negative'! !
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 16:24:30'!
 register: aValue from: aSenderAccount to: aReceiverAccount
 	|transfer|
+	aValue < 0 ifTrue: [self error: self NegativeTransferValueError ].
+	
 	transfer := self new initializeFor: aValue from: aSenderAccount to: aReceiverAccount.
 	aSenderAccount register: transfer.
 	aReceiverAccount register: transfer.
-	^transfer! !
+	^transfer
+	! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
@@ -300,9 +310,3 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'SG 6/2/2022 21:52:51'!
-transferTo: anAccount value: aValue
-	
-	Withdraw register: aValue on: self.
-	Deposit register: aValue on: anAccount.! !
