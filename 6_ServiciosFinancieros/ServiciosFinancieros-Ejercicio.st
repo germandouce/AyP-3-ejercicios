@@ -88,21 +88,18 @@ test07AccountKnowsItsTransactions
 	self assert: (account transactions includes: deposit).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'SG 6/2/2022 21:50:24'!
-test08
-
-	| withdrawAccount depositAccount |
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'GD 6/6/2022 15:20:45'!
+test08TransferKnowsItsValue
 	
-	withdrawAccount := ReceptiveAccount new.
-	depositAccount := ReceptiveAccount new.
+	|account1 account2|
 	
-	Deposit register: 50 * peso on: withdrawAccount.
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
 	
-	withdrawAccount transferTo: depositAccount value: 50 * peso.
+	Transfer register: 100 *peso from: account1 to: account2.
 	
-	self assert: 0 * peso equals: withdrawAccount balance.
-	self assert: 50 * peso equals: depositAccount balance.
-! !
+	self assert: 100* peso equals: account2 balance.	
+	self assert: -100* peso equals: account1 balance.	! !
 
 !ReceptiveAccountTest methodsFor: 'tests' stamp: 'SG 6/2/2022 23:59:41'!
 test09
@@ -164,8 +161,8 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'SG 6/2/2022 21:25:38'!
-transactionValue
+!Deposit methodsFor: 'value' stamp: 'GD 6/6/2022 15:29:36'!
+transactionValueFor: anAccount
 
 	^ value! !
 
@@ -186,6 +183,44 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
+!classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
+AccountTransaction subclass: #Transfer
+	instanceVariableNames: 'value senderAccount receiverAccount'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Transfer methodsFor: 'initialization' stamp: 'GD 6/6/2022 15:04:35'!
+initializeFor: aValue from: aSenderAccount to: aReceiverAccount 
+	value := aValue.
+	senderAccount := aSenderAccount.
+	receiverAccount := aReceiverAccount.! !
+
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:25:50'!
+transactionValueFor: anAccount
+	anAccount = senderAccount ifTrue: [
+		^value negated
+	].
+	anAccount = receiverAccount ifTrue: [
+		^value
+	]! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transfer class' category: 'ServiciosFinancieros-Ejercicio'!
+Transfer class
+	instanceVariableNames: ''!
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:03:24'!
+register: aValue from: aSenderAccount to: aReceiverAccount
+	|transfer|
+	transfer := self new initializeFor: aValue from: aSenderAccount to: aReceiverAccount.
+	aSenderAccount register: transfer.
+	aReceiverAccount register: transfer.
+	^transfer! !
+
+
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
 AccountTransaction subclass: #Withdraw
 	instanceVariableNames: 'value'
@@ -199,8 +234,8 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'SG 6/2/2022 21:25:21'!
-transactionValue
+!Withdraw methodsFor: 'value' stamp: 'GD 6/6/2022 15:29:49'!
+transactionValueFor: anAccount
 
 	^ value negated! !
 
@@ -234,10 +269,10 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'SG 6/2/2022 21:48:21'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'GD 6/6/2022 15:29:17'!
 balance
 
-	^transactions sum: [ :aTransaction | aTransaction transactionValue] ifEmpty: [ 0 ]
+	^transactions sum: [ :aTransaction | aTransaction transactionValueFor: self] ifEmpty: [ 0 ]
 	
 	"^transactions inject: 0 into: [ :balance :aTransaction | aTransaction xxx: balance]"
 	
