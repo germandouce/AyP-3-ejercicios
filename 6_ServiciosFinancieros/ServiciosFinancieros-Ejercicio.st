@@ -1,3 +1,123 @@
+!classDefinition: #PortolioTest category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #PortolioTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:53:52'!
+test00SeCreaUnPortfollioSinSaldo
+	
+	| portfolio |
+	
+	portfolio := Portfolio new.
+	
+	self assert: 0 equals: portfolio balance
+	
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:52:26'!
+test01SeCreaUnPortfollioSinSaldo
+	
+	|account portfolio|
+	
+	account := ReceptiveAccount new.
+	portfolio := Portfolio initializeWith: account.
+	
+	self assert: 0 equals: portfolio balance
+	
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:56:30'!
+test02PortfolioConCuentaConSaldoDevuelveElSaldoDeLaCuenta
+	
+	|account portfolio|
+	
+	account := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account.
+	
+	portfolio := Portfolio initializeWith: account.
+	
+	self assert: 100 * peso equals: portfolio balance
+	
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:52:34'!
+test03PortfolioConVariasCuentasDevuelveElBalanceTotal
+	
+	|account1 account2 portfolio|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	Deposit register: 200 * peso on: account2.
+	
+	portfolio := (Portfolio initializeWith: account1) with: account2.
+	
+	self assert: 300 * peso equals: portfolio balance
+	
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:44:58'!
+test04
+	
+	|account transaction portfolio|
+	
+	account := ReceptiveAccount new.
+	transaction := Deposit register: 100 * peso on: account.
+	
+	portfolio := Portfolio initializeWith: account.
+	
+	self assert: (portfolio hasRegistered: transaction). 
+	
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:48:32'!
+test05
+	
+	|account1 account2 transaction portfolio|
+	
+	account1 := ReceptiveAccount new.
+	transaction := Deposit register: 100 * peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	Deposit register: 300 * peso on: account2.
+	
+	portfolio := (Portfolio initializeWith: account1) with: account2 .
+	
+	self assert: (portfolio hasRegistered: transaction). 
+	
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:48:44'!
+test06
+	"TEST DE PRUEBA"
+	|account1 account2 account3 transaction portfolio|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	Deposit register: 300 * peso on: account2.
+	
+	portfolio := (Portfolio initializeWith: account1) with: account2 .
+	
+	account3 := ReceptiveAccount new.
+	transaction := Deposit register: 300 * peso on: account3.
+	
+	self deny: (portfolio hasRegistered: transaction). 
+	
+	
+	! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -182,55 +302,6 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
-AccountTransaction subclass: #Transfer
-	instanceVariableNames: 'value senderAccount receiverAccount'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!Transfer methodsFor: 'initialization' stamp: 'GD 6/6/2022 15:04:35'!
-initializeFor: aValue from: aSenderAccount to: aReceiverAccount 
-	value := aValue.
-	senderAccount := aSenderAccount.
-	receiverAccount := aReceiverAccount.! !
-
-
-!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:25:50'!
-transactionValueFor: anAccount
-	anAccount = senderAccount ifTrue: [
-		^value negated
-	].
-	anAccount = receiverAccount ifTrue: [
-		^value
-	]! !
-
-!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:46:50'!
-value
-	^value! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'Transfer class' category: 'ServiciosFinancieros-Ejercicio'!
-Transfer class
-	instanceVariableNames: ''!
-
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 16:21:20'!
-NegativeTransferValueError
-	^'transfer value cannot be negative'! !
-
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 16:24:30'!
-register: aValue from: aSenderAccount to: aReceiverAccount
-	|transfer|
-	aValue < 0 ifTrue: [self error: self NegativeTransferValueError ].
-	
-	transfer := self new initializeFor: aValue from: aSenderAccount to: aReceiverAccount.
-	aSenderAccount register: transfer.
-	aReceiverAccount register: transfer.
-	^transfer
-	! !
-
-
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
 AccountTransaction subclass: #Withdraw
 	instanceVariableNames: 'value'
@@ -264,6 +335,61 @@ Withdraw class
 for: aValue
 
 	^ self new initializeFor: aValue! !
+
+
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Portfolio
+	instanceVariableNames: 'accountList'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:42:58'!
+balance
+	
+	^accountList sum: [ :account | account balance ] ifEmpty: [ 0 ]! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:33:30'!
+hasRegistered: transaction
+
+	"| booltest|
+	accountList do: [ :anAccount | booltest := (anAccount hasRegistered: transaction)].
+	^booltest"
+	
+	"| test|
+	test := accountList detect: [ :anAccount | anAccount hasRegistered: transaction ].
+	Transcript show: test.
+	^test"
+	
+	| booltest|
+	booltest := false.
+	accountList do: [ :anAccount | 
+		booltest := ((anAccount hasRegistered: transaction) or: booltest)].
+	^booltest
+	
+	
+	! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:32:24'!
+initialize
+	accountList := OrderedCollection new.! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:28:42'!
+with: anAccount
+	accountList add: anAccount ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
+	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:28:12'!
+initializeWith: anAccount
+	| portfolio |
+	portfolio := self new with: anAccount.
+	
+	^portfolio! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -310,3 +436,52 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
+
+
+!classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Transfer
+	instanceVariableNames: 'value senderAccount receiverAccount'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Transfer methodsFor: 'initialization' stamp: 'GD 6/6/2022 15:04:35'!
+initializeFor: aValue from: aSenderAccount to: aReceiverAccount 
+	value := aValue.
+	senderAccount := aSenderAccount.
+	receiverAccount := aReceiverAccount.! !
+
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:25:50'!
+transactionValueFor: anAccount
+	anAccount = senderAccount ifTrue: [
+		^value negated
+	].
+	anAccount = receiverAccount ifTrue: [
+		^value
+	]! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:46:50'!
+value
+	^value! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transfer class' category: 'ServiciosFinancieros-Ejercicio'!
+Transfer class
+	instanceVariableNames: ''!
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 16:21:20'!
+NegativeTransferValueError
+	^'transfer value cannot be negative'! !
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 16:24:30'!
+register: aValue from: aSenderAccount to: aReceiverAccount
+	|transfer|
+	aValue < 0 ifTrue: [self error: self NegativeTransferValueError ].
+	
+	transfer := self new initializeFor: aValue from: aSenderAccount to: aReceiverAccount.
+	aSenderAccount register: transfer.
+	aReceiverAccount register: transfer.
+	^transfer
+	! !
