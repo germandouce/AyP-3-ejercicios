@@ -5,7 +5,227 @@ TestCase subclass: #PortolioTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:19:36'!
+test11
+	
+	"Empty Portfolio inside another porfolio"
+	|mainPortfolio subPortfolio|
+	
+	subPortfolio := Portfolio new.
+	
+	mainPortfolio := (Portfolio initializeWith: subPortfolio).
+
+	
+	self assert: 0 equals: mainPortfolio balance.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:20:03'!
+test12
+	
+	"Portfolio with ONE empty account inside another porfolio"
+	
+	|mainPortfolio subPortfolio account|
+	
+	account := ReceptiveAccount new.
+	
+	subPortfolio := Portfolio initializeWith: account.
+	
+	mainPortfolio := Portfolio initializeWith: subPortfolio.
+
+	
+	self assert: 0 equals: mainPortfolio balance.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:21:44'!
+test13
+	
+	"Portfolio with one NOT empty account inside another porfolio"
+	
+	|mainPortfolio subPortfolio account|
+	
+	account := ReceptiveAccount new.
+	
+	Deposit register: 100* peso on: account.
+	
+	subPortfolio := Portfolio initializeWith: account.
+	
+	mainPortfolio := Portfolio initializeWith: subPortfolio.
+
+	
+	self assert: 100* peso equals: mainPortfolio balance.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:24:47'!
+test14
+	
+	"Portfolio with 2 accounts inside another porfolio"
+	
+	|mainPortfolio subPortfolio account1 account2|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100* peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	Deposit register: 200* peso on: account2.
+	
+	subPortfolio := (Portfolio initializeWith: account1) add: account2.
+	
+	mainPortfolio := Portfolio initializeWith: subPortfolio.
+
+	
+	self assert: 300* peso equals: mainPortfolio balance.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:27:19'!
+test15
+	
+	"Portfolio with 2 subportfolios, each one with an account"
+	
+	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100* peso on: account1.
+	subPortfolio1 := (Portfolio initializeWith: account1).
+
+	account2 := ReceptiveAccount new.
+	Deposit register: 200* peso on: account2.	
+	subPortfolio2 := (Portfolio initializeWith: account2).
+	
+	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2.
+
+	
+	self assert: 300* peso equals: mainPortfolio balance.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:38:41'!
+test16
+
+	"Portfolio with one NOT empty account inside another porfolio
+	- Contains a specific transaction "
+	
+	
+	|mainPortfolio subPortfolio account transaction|
+	
+	account := ReceptiveAccount new.
+	
+	transaction := Deposit register: 100* peso on: account.
+	
+	subPortfolio := Portfolio initializeWith: account.
+	
+	mainPortfolio := Portfolio initializeWith: subPortfolio.
+
+	
+	self assert: (mainPortfolio hasRegistered: transaction).! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:43:18'!
+test17
+	
+	"Portfolio with 2 accounts inside another porfolio
+	-Contains a specific transaction "
+	
+	|mainPortfolio subPortfolio account1 transaction1 account2 transaction2|
+	
+	account1 := ReceptiveAccount new.
+	transaction1 := Deposit register: 100* peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	transaction2 := Deposit register: 200* peso on: account2.
+	
+	subPortfolio := (Portfolio initializeWith: account1) add: account2.
+	
+	mainPortfolio := Portfolio initializeWith: subPortfolio.
+
+	
+	self assert: (mainPortfolio hasRegistered: transaction1). 
+	self assert: (mainPortfolio hasRegistered: transaction2).! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:48:34'!
+test18
+	
+	"Portfolio with 2 subportfolios, each one with an account
+	-contains a transaction"
+	
+	|mainPortfolio subPortfolio1 account1 transaction1 subPortfolio2 transaction2 account2|
+	
+	account1 := ReceptiveAccount new.
+	transaction1 := Deposit register: 100* peso on: account1.
+	subPortfolio1 := (Portfolio initializeWith: account1).
+
+	account2 := ReceptiveAccount new.
+	transaction2 := Deposit register: 200* peso on: account2.	
+	subPortfolio2 := (Portfolio initializeWith: account2).
+	
+	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2.
+	
+	self assert: (mainPortfolio hasRegistered: transaction1).
+	self assert: (mainPortfolio hasRegistered: transaction2).! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:55:01'!
+test19
+	
+	"Portfolio with one empty portfolio
+	-Know all transactions "
+	
+	|mainPortfolio subPortfolio account|
+	
+	account := ReceptiveAccount new.
+	subPortfolio := (Portfolio initializeWith: account).
+
+	mainPortfolio := (Portfolio initializeWith: subPortfolio).
+	
+	self assert: 0 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:02:56'!
+test20
+	
+	"Portfolio with NOT empty portfolio
+	-Know all transactions "
+	
+	|mainPortfolio subPortfolio account|
+	
+	account := ReceptiveAccount new.
+	Deposit register: 100* peso  on: account.
+	subPortfolio := (Portfolio initializeWith: account).
+
+	mainPortfolio := (Portfolio initializeWith: subPortfolio).
+	
+	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:30:32'!
+test21
+	
+	"Portfolio with 2 portofolios and 1 account 
+	-gets transactions"
+	
+	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2 |
+	
+	account1 := ReceptiveAccount new.
+	subPortfolio1 := (Portfolio initializeWith: account1).
+	Deposit register: 100* peso  on: account1.
+	
+	account2 := ReceptiveAccount new.
+	subPortfolio2 := (Portfolio initializeWith: account2).
+
+	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2 .
+	
+	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account1) size.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:31:22'!
+test22
+	
+	"Portfolio with 2 portofolios and 1 account 
+	-gets transactions"
+	
+	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2 |
+	
+	account1 := ReceptiveAccount new.
+	subPortfolio1 := (Portfolio initializeWith: account1).
+	
+	account2 := ReceptiveAccount new.
+	subPortfolio2 := (Portfolio initializeWith: account2).
+	Deposit register: 100* peso  on: account2.
+
+	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2 .
+	
+	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account2) size.! !
+
+
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
 test006
 	"TEST DE PRUEBA"
 	|account1 account2 account3 transaction portfolio|
@@ -26,7 +246,7 @@ test006
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:53:52'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:53:52'!
 test00SeCreaUnPortfollioSinSaldo
 	
 	| portfolio |
@@ -38,7 +258,7 @@ test00SeCreaUnPortfollioSinSaldo
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:52:26'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:52:26'!
 test01SeCreaUnPortfollioSinSaldo
 	
 	|account portfolio|
@@ -51,7 +271,7 @@ test01SeCreaUnPortfollioSinSaldo
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:56:30'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:56:30'!
 test02PortfolioConCuentaConSaldoDevuelveElSaldoDeLaCuenta
 	
 	|account portfolio|
@@ -66,7 +286,7 @@ test02PortfolioConCuentaConSaldoDevuelveElSaldoDeLaCuenta
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
 test03PortfolioConVariasCuentasDevuelveElBalanceTotal
 	
 	|account1 account2 portfolio|
@@ -84,7 +304,7 @@ test03PortfolioConVariasCuentasDevuelveElBalanceTotal
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:44:58'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 21:44:58'!
 test04
 	
 	|account transaction portfolio|
@@ -99,7 +319,7 @@ test04
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
 test05
 	
 	|account1 account2 transaction portfolio|
@@ -117,7 +337,7 @@ test05
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:08:53'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:08:53'!
 test06
 	
 	|account portfolio|
@@ -131,7 +351,7 @@ test06
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:08:13'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:08:13'!
 test07
 	
 	|account portfolio|
@@ -146,7 +366,7 @@ test07
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:32:07'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:32:07'!
 test08
 	
 	|account1 account2  portfolio|
@@ -164,7 +384,7 @@ test08
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:51:52'!
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:51:52'!
 test09
 	
 	|account1 account2  portfolio|
@@ -181,6 +401,27 @@ test09
 	self assert: 1 equals: (portfolio getTransactionsFromAccount: account1) size. 
 	self assert: 2 equals: (portfolio getTransactionsFromAccount: account2) size. 
 	
+	
+	! !
+
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:57:44'!
+test10
+	
+	|account1 account2  portfolio account3|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	Deposit register: 300 * peso on: account2.
+	Deposit register: 301 * peso on: account2.
+			
+	account3 := ReceptiveAccount new.
+	
+	portfolio := (Portfolio initializeWith: account1) add: account2.
+	
+	self assert: 0 equals: (portfolio getTransactionsFromAccount: account3) size. 
+
 	
 	! !
 
@@ -415,17 +656,25 @@ Object subclass: #Portfolio
 add: anAccount
 	accountList add: anAccount ! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:42:58'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 15:08:49'!
 balance
-	
 	^accountList sum: [ :account | account balance ] ifEmpty: [ 0 ]! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:44:18'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 16:50:19'!
 getTransactionsFromAccount: aReceptiveAccount 
+	
+	|resultado|
+	
 	accountList do: [:anAccount |
-		Transcript show: (anAccount transactions).
 		anAccount = aReceptiveAccount ifTrue: [
 			^anAccount transactions
+			].
+		anAccount class = Portfolio ifTrue: [
+			resultado := anAccount getTransactionsFromAccount: aReceptiveAccount.
+			resultado size = 0 ifFalse:[	
+				^resultado
+
+				]
 			]
 		 ].
 	^ OrderedCollection new.
