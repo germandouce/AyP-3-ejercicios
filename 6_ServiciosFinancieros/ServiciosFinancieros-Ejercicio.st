@@ -608,7 +608,7 @@ value
 Deposit class
 	instanceVariableNames: ''!
 
-!Deposit class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:38'!
+!Deposit class methodsFor: 'instance creation' stamp: 'GD 6/8/2022 19:34:14'!
 for: aValue
 
 	^ self new initializeFor: aValue ! !
@@ -684,13 +684,13 @@ getTransactionsFromAccount: aReceptiveAccount
 	^ OrderedCollection new.
 	! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 18:36:23'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:40:02'!
 hasRegistered: transaction
 
 	|answer|
 	answer := false.
 	accountList do: [ :anAccount | 
-		answer := ((anAccount hasRegistered: transaction) or: answer)].
+		answer := ((anAccount hasRegistered: transaction) for: answer)].
 	^answer
 	
 	
@@ -752,17 +752,26 @@ transactions
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transfer
-	instanceVariableNames: 'value senderAccount receiverAccount'
+	instanceVariableNames: 'value withdrawAccount depositAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Transfer methodsFor: 'initialization' stamp: 'GD 6/6/2022 15:04:35'!
+!Transfer methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:54:44'!
 initializeFor: aValue from: aSenderAccount to: aReceiverAccount 
 	value := aValue.
-	senderAccount := aSenderAccount.
-	receiverAccount := aReceiverAccount.! !
+	withdrawAccount := TransferWithdraw register: self on: aSenderAccount.
+	depositAccount := TransferDeposit register: self on: aReceiverAccount.! !
 
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:25:24'!
+getDepositAccount
+	^depositAccount	! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:25:31'!
+getWithdrawAccount
+	^withdrawAccount
+	! !
 
 !Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:25:50'!
 transactionValueFor: anAccount
@@ -797,3 +806,109 @@ register: aValue from: aSenderAccount to: aReceiverAccount
 	aReceiverAccount register: transfer.
 	^transfer
 	! !
+
+
+!classDefinition: #TransferMember category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #TransferMember
+	instanceVariableNames: 'transfer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferMember class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferMember class
+	instanceVariableNames: ''!
+
+!TransferMember class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:52:31'!
+register: aValue on: account
+
+	| transaction |
+	
+	transaction := self for: aValue.
+	account register: transaction.
+		
+	^ transaction! !
+
+
+!classDefinition: #TransferDeposit category: 'ServiciosFinancieros-Ejercicio'!
+TransferMember subclass: #TransferDeposit
+	instanceVariableNames: 'depositAccount'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:25:14'!
+counterpart
+	^transfer getWithdrawAccount.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 20:03:18'!
+initializeFor: aTransfer
+	transfer := aTransfer.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:10:47'!
+initializeWith: aTransfer to: aDepositAccount
+	transfer := aTransfer.
+	depositAccount := aDepositAccount.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:43:42'!
+transactionValueFor: anAccount
+	^ transfer value.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferDeposit class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferDeposit class
+	instanceVariableNames: ''!
+
+!TransferDeposit class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:34:52'!
+for: aValue
+
+	^ self new initializeFor: aValue ! !
+
+!TransferDeposit class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:16:54'!
+initializeWith: aTransfer to: aDepositAccount
+	|senderAccount|
+	senderAccount := self new initializeWith: aTransfer to: aDepositAccount.
+	^senderAccount! !
+
+
+!classDefinition: #TransferWithdraw category: 'ServiciosFinancieros-Ejercicio'!
+TransferMember subclass: #TransferWithdraw
+	instanceVariableNames: 'withdrawAccount'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:24:52'!
+counterpart
+	^transfer getDepositAccount.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:37:11'!
+initializeFor: aValue
+	transfer := aValue ! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:14:59'!
+initializeWith: aTransfer to: aWithdrawAccount
+	transfer := aTransfer.
+	withdrawAccount := aWithdrawAccount.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:43:54'!
+transactionValueFor: anAccount
+	^ transfer value negated.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferWithdraw class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferWithdraw class
+	instanceVariableNames: ''!
+
+!TransferWithdraw class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:40:02'!
+for: aValue
+
+	^ self new initializeFor: aValue ! !
+
+!TransferWithdraw class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:15:59'!
+initializeWith: aTransfer to: aWithdrawAccount
+	^ self new initializeWith: aTransfer to: aWithdrawAccount.! !
