@@ -5,10 +5,9 @@ TestCase subclass: #PortolioTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:19:36'!
-test11
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:38'!
+test11EmptyPortfolioInsideAnotherPortfolioHasCeroBalance
 	
-	"Empty Portfolio inside another porfolio"
 	|mainPortfolio subPortfolio|
 	
 	subPortfolio := Portfolio new.
@@ -18,11 +17,9 @@ test11
 	
 	self assert: 0 equals: mainPortfolio balance.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:20:03'!
-test12
-	
-	"Portfolio with ONE empty account inside another porfolio"
-	
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:33'!
+test12PortfolioWithOneEmptyAccountInsideAnotherPorfolioHasCeroBalance
+		
 	|mainPortfolio subPortfolio account|
 	
 	account := ReceptiveAccount new.
@@ -34,11 +31,9 @@ test12
 	
 	self assert: 0 equals: mainPortfolio balance.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:21:44'!
-test13
-	
-	"Portfolio with one NOT empty account inside another porfolio"
-	
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:24'!
+test13PortfolioWithOneNotEmptyAccountInsideAnotherPorfolioHasItsOnlyAccountBalance
+		
 	|mainPortfolio subPortfolio account|
 	
 	account := ReceptiveAccount new.
@@ -52,11 +47,9 @@ test13
 	
 	self assert: 100* peso equals: mainPortfolio balance.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:24:47'!
-test14
-	
-	"Portfolio with 2 accounts inside another porfolio"
-	
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:19'!
+test14PortfolioWithTwoAccountsInsideAnotherPorfolioHasTotalBalanceOfTheSumOfitsAccounts
+		
 	|mainPortfolio subPortfolio account1 account2|
 	
 	account1 := ReceptiveAccount new.
@@ -72,10 +65,8 @@ test14
 	
 	self assert: 300* peso equals: mainPortfolio balance.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:27:19'!
-test15
-	
-	"Portfolio with 2 subportfolios, each one with an account"
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:15'!
+test15PortfolioWithTwoSubportfoliosEachOneWithAnAccountHasTotalBalanceOfTheSumOfItsAccountsBalance
 	
 	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2|
 	
@@ -92,12 +83,8 @@ test15
 	
 	self assert: 300* peso equals: mainPortfolio balance.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:38:41'!
-test16
-
-	"Portfolio with one NOT empty account inside another porfolio
-	- Contains a specific transaction "
-	
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:11'!
+test16PortfolioWithOneNonEmptyAccountInsideAnotherPorfolioAnswersIfItsAccountHasRegisteredATransaction
 	
 	|mainPortfolio subPortfolio account transaction|
 	
@@ -112,11 +99,8 @@ test16
 	
 	self assert: (mainPortfolio hasRegistered: transaction).! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:43:18'!
-test17
-	
-	"Portfolio with 2 accounts inside another porfolio
-	-Contains a specific transaction "
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:03'!
+test17PortfolioWithTwoAccountsInsideAnotherPortfolioAnwsersIfContainsAspecificTransaction
 	
 	|mainPortfolio subPortfolio account1 transaction1 account2 transaction2|
 	
@@ -134,11 +118,8 @@ test17
 	self assert: (mainPortfolio hasRegistered: transaction1). 
 	self assert: (mainPortfolio hasRegistered: transaction2).! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:48:34'!
-test18
-	
-	"Portfolio with 2 subportfolios, each one with an account
-	-contains a transaction"
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:56'!
+test18PortfolioWithTwoSubportfoliosEachOneWithAnAccountAnswersIfItContainsATransaction
 	
 	|mainPortfolio subPortfolio1 account1 transaction1 subPortfolio2 transaction2 account2|
 	
@@ -155,11 +136,8 @@ test18
 	self assert: (mainPortfolio hasRegistered: transaction1).
 	self assert: (mainPortfolio hasRegistered: transaction2).! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:57:29'!
-test19
-	
-	"Portfolio with one empty portfolio
-	-get all transactions "
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:49'!
+test19PortfolioWithOneEmptyPortfolioKnowsCeroTransactions
 	
 	|mainPortfolio subPortfolio account|
 	
@@ -170,11 +148,8 @@ test19
 	
 	self assert: 0 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:57:20'!
-test20
-	
-	"Portfolio with NOT empty portfolio
-	-get all transactions "
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:44'!
+test20PortfolioWithNonEmptyPortfolioWithOneAccountKnowsItsAccountTransactions
 	
 	|mainPortfolio subPortfolio account|
 	
@@ -186,11 +161,9 @@ test20
 	
 	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:30:32'!
-test21
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:37'!
+test21PortfolioWithTwoSubportofoliosTheFirstOfWhichHasOneAccountInsideKnowsItsAccountTransactions
 	
-	"Portfolio with 2 portofolios and 1 account 
-	-gets transactions"
 	
 	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2 |
 	
@@ -205,11 +178,8 @@ test21
 	
 	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account1) size.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:31:22'!
-test22
-	
-	"Portfolio with 2 portofolios and 1 account 
-	-gets transactions"
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:28'!
+test22PortfolioWithTwoSubportofoliosTheSecondOfWhichHasOneAccountInsideKnowsItsAccountTransactions
 	
 	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2 |
 	
@@ -224,11 +194,8 @@ test22
 	
 	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account2) size.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 17:04:14'!
-test23
-	
-	"Portfolio with 2 subportfolios, each one with an account
-	-contains a transaction"
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:17'!
+test23PortfolioWithTwoSubportfoliosEachOneWithAnAccountKnowsItsAccountsTransactions
 	
 	|mainPortfolio subPortfolio1 account1 
 	subPortfolio2 account2
@@ -256,12 +223,9 @@ test23
 	self assert: 3 equals: (mainPortfolio getTransactionsFromAccount: account3) size.
 	! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 17:08:48'!
-test24
-	
-	"Portfolio with 2 subportfolios each one with an account.
-	-We ask for transactions of a third inexistent account"
-	
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:32:29'!
+test24PortfolioWithTwoSubportfoliosEachOneWithAnAccountDoesNotKnowAThirdAccountTransactions
+
 	|mainPortfolio subPortfolio1 account1 
 	subPortfolio2 account2
 	account3|
@@ -286,29 +250,8 @@ test24
 	! !
 
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
-test006
-	"TEST DE PRUEBA"
-	|account1 account2 account3 transaction portfolio|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100 * peso on: account1.
-	
-	account2 := ReceptiveAccount new.
-	Deposit register: 300 * peso on: account2.
-	
-	portfolio := (Portfolio initializeWith: account1) add: account2 .
-	
-	account3 := ReceptiveAccount new.
-	transaction := Deposit register: 300 * peso on: account3.
-	
-	self deny: (portfolio hasRegistered: transaction). 
-	
-	
-	! !
-
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:53:52'!
-test00SeCreaUnPortfollioSinSaldo
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:25:36'!
+test00ANewPortfolioIsCreatedWithCeroBalance
 	
 	| portfolio |
 	
@@ -319,8 +262,8 @@ test00SeCreaUnPortfollioSinSaldo
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:52:26'!
-test01SeCreaUnPortfollioSinSaldo
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:27:22'!
+test01APortfolioWithAnAccountIsCreatedWithCeroBalance
 	
 	|account portfolio|
 	
@@ -332,8 +275,8 @@ test01SeCreaUnPortfollioSinSaldo
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:56:30'!
-test02PortfolioConCuentaConSaldoDevuelveElSaldoDeLaCuenta
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:30:32'!
+test02PortfolioWithOneAccountHasHasSameBalanceAsAccountContained
 	
 	|account portfolio|
 	
@@ -347,8 +290,8 @@ test02PortfolioConCuentaConSaldoDevuelveElSaldoDeLaCuenta
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
-test03PortfolioConVariasCuentasDevuelveElBalanceTotal
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:33:23'!
+test03PortfolioWithManyAccountsHasBalanceOfAllAccountsTotalBalance
 	
 	|account1 account2 portfolio|
 	
@@ -365,8 +308,8 @@ test03PortfolioConVariasCuentasDevuelveElBalanceTotal
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 21:44:58'!
-test04
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:59:45'!
+test04PortfolioWithOneAccountCanAnswerIfItsAccountHasRegisteredATransaction
 	
 	|account transaction portfolio|
 	
@@ -380,8 +323,8 @@ test04
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
-test05
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 18:00:39'!
+test05PortfolioWithManyAccountsCanAnswerIfItsAccountsContainATransaction
 	
 	|account1 account2 transaction portfolio|
 	
@@ -398,8 +341,8 @@ test05
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:08:53'!
-test06
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 18:00:53'!
+test06EmptyPortfolioKnowsCeroTransactions
 	
 	|account portfolio|
 	
@@ -412,8 +355,8 @@ test06
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:08:13'!
-test07
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:55:53'!
+test07PortfolioWithOneAccountKnowsOneTransaction
 	
 	|account portfolio|
 	
@@ -427,8 +370,8 @@ test07
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:32:07'!
-test08
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 18:02:05'!
+test08PortfolioWhichDoesNotInlcudeAnAccountDoesNotKnowItsRegisteredTransactions
 	
 	|account1 account2  portfolio|
 	
@@ -445,8 +388,8 @@ test08
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:51:52'!
-test09
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 18:02:47'!
+test09PortfolioWithManyAccountsKnowsItsAccountsTransctions
 	
 	|account1 account2  portfolio|
 	
@@ -465,8 +408,8 @@ test09
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:57:44'!
-test10
+!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:53:27'!
+test10PortfolioWithTwoAccountsDoesNotKnowAThirdAccountTransactions
 	
 	|account1 account2  portfolio account3|
 	
@@ -741,23 +684,14 @@ getTransactionsFromAccount: aReceptiveAccount
 	^ OrderedCollection new.
 	! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:33:30'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 18:36:23'!
 hasRegistered: transaction
 
-	"| booltest|
-	accountList do: [ :anAccount | booltest := (anAccount hasRegistered: transaction)].
-	^booltest"
-	
-	"| test|
-	test := accountList detect: [ :anAccount | anAccount hasRegistered: transaction ].
-	Transcript show: test.
-	^test"
-	
-	| booltest|
-	booltest := false.
+	|answer|
+	answer := false.
 	accountList do: [ :anAccount | 
-		booltest := ((anAccount hasRegistered: transaction) or: booltest)].
-	^booltest
+		answer := ((anAccount hasRegistered: transaction) or: answer)].
+	^answer
 	
 	
 	! !
@@ -793,20 +727,10 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'GD 6/6/2022 15:29:17'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'GD 6/8/2022 18:36:57'!
 balance
 
-	^transactions sum: [ :aTransaction | aTransaction transactionValueFor: self] ifEmpty: [ 0 ]
-	
-	"^transactions inject: 0 into: [ :balance :aTransaction | aTransaction xxx: balance]"
-	
-	
-	"^transactions sum: [ :aTransaction | 
-		(aTransaction isKindOf: Deposit) 
-		ifTrue: [aTransaction value]
-		ifFalse: [aTransaction value negated]
-		] ifEmpty: [ 0 ]"
-	! !
+	^transactions sum: [ :aTransaction | aTransaction transactionValueFor: self] ifEmpty: [ 0 ].! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
