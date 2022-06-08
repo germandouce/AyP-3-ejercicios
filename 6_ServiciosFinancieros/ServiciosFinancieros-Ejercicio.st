@@ -5,6 +5,27 @@ TestCase subclass: #PortolioTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
+test006
+	"TEST DE PRUEBA"
+	|account1 account2 account3 transaction portfolio|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	Deposit register: 300 * peso on: account2.
+	
+	portfolio := (Portfolio initializeWith: account1) add: account2 .
+	
+	account3 := ReceptiveAccount new.
+	transaction := Deposit register: 300 * peso on: account3.
+	
+	self deny: (portfolio hasRegistered: transaction). 
+	
+	
+	! !
+
 !PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:53:52'!
 test00SeCreaUnPortfollioSinSaldo
 	
@@ -45,7 +66,7 @@ test02PortfolioConCuentaConSaldoDevuelveElSaldoDeLaCuenta
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:52:34'!
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
 test03PortfolioConVariasCuentasDevuelveElBalanceTotal
 	
 	|account1 account2 portfolio|
@@ -56,7 +77,7 @@ test03PortfolioConVariasCuentasDevuelveElBalanceTotal
 	account2 := ReceptiveAccount new.
 	Deposit register: 200 * peso on: account2.
 	
-	portfolio := (Portfolio initializeWith: account1) with: account2.
+	portfolio := (Portfolio initializeWith: account1) add: account2.
 	
 	self assert: 300 * peso equals: portfolio balance
 	
@@ -78,7 +99,7 @@ test04
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:48:32'!
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
 test05
 	
 	|account1 account2 transaction portfolio|
@@ -89,17 +110,46 @@ test05
 	account2 := ReceptiveAccount new.
 	Deposit register: 300 * peso on: account2.
 	
-	portfolio := (Portfolio initializeWith: account1) with: account2 .
+	portfolio := (Portfolio initializeWith: account1) add: account2 .
 	
 	self assert: (portfolio hasRegistered: transaction). 
 	
 	
 	! !
 
-!PortolioTest methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:48:44'!
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:08:53'!
 test06
-	"TEST DE PRUEBA"
-	|account1 account2 account3 transaction portfolio|
+	
+	|account portfolio|
+	
+	account := ReceptiveAccount new.
+	
+	portfolio := Portfolio new. 
+	
+	self assert: 0 equals: (portfolio getTransactionsFromAccount: account) size. 
+	
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:08:13'!
+test07
+	
+	|account portfolio|
+	
+	account := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account.
+	
+	portfolio := (Portfolio initializeWith: account). 
+	
+	self assert: 1 equals: (portfolio getTransactionsFromAccount: account) size. 
+	
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:32:07'!
+test08
+	
+	|account1 account2  portfolio|
 	
 	account1 := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account1.
@@ -107,12 +157,29 @@ test06
 	account2 := ReceptiveAccount new.
 	Deposit register: 300 * peso on: account2.
 	
-	portfolio := (Portfolio initializeWith: account1) with: account2 .
+	portfolio := Portfolio initializeWith: account1.
 	
-	account3 := ReceptiveAccount new.
-	transaction := Deposit register: 300 * peso on: account3.
+	self assert: 0 equals: (portfolio getTransactionsFromAccount: account2) size. 
 	
-	self deny: (portfolio hasRegistered: transaction). 
+	
+	! !
+
+!PortolioTest methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:51:52'!
+test09
+	
+	|account1 account2  portfolio|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	Deposit register: 300 * peso on: account2.
+	Deposit register: 301 * peso on: account2.
+			
+	portfolio := (Portfolio initializeWith: account1) add: account2.
+	
+	self assert: 1 equals: (portfolio getTransactionsFromAccount: account1) size. 
+	self assert: 2 equals: (portfolio getTransactionsFromAccount: account2) size. 
 	
 	
 	! !
@@ -344,10 +411,25 @@ Object subclass: #Portfolio
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
+add: anAccount
+	accountList add: anAccount ! !
+
 !Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:42:58'!
 balance
 	
 	^accountList sum: [ :account | account balance ] ifEmpty: [ 0 ]! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 14:44:18'!
+getTransactionsFromAccount: aReceptiveAccount 
+	accountList do: [:anAccount |
+		Transcript show: (anAccount transactions).
+		anAccount = aReceptiveAccount ifTrue: [
+			^anAccount transactions
+			]
+		 ].
+	^ OrderedCollection new.
+	! !
 
 !Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 21:33:30'!
 hasRegistered: transaction
@@ -374,20 +456,16 @@ hasRegistered: transaction
 initialize
 	accountList := OrderedCollection new.! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:28:42'!
-with: anAccount
-	accountList add: anAccount ! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:28:12'!
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
 initializeWith: anAccount
 	| portfolio |
-	portfolio := self new with: anAccount.
+	portfolio := self new add: anAccount.
 	
 	^portfolio! !
 
