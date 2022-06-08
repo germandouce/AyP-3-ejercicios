@@ -155,11 +155,11 @@ test18
 	self assert: (mainPortfolio hasRegistered: transaction1).
 	self assert: (mainPortfolio hasRegistered: transaction2).! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:55:01'!
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:57:29'!
 test19
 	
 	"Portfolio with one empty portfolio
-	-Know all transactions "
+	-get all transactions "
 	
 	|mainPortfolio subPortfolio account|
 	
@@ -170,11 +170,11 @@ test19
 	
 	self assert: 0 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:02:56'!
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:57:20'!
 test20
 	
 	"Portfolio with NOT empty portfolio
-	-Know all transactions "
+	-get all transactions "
 	
 	|mainPortfolio subPortfolio account|
 	
@@ -223,6 +223,67 @@ test22
 	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2 .
 	
 	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account2) size.! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 17:04:14'!
+test23
+	
+	"Portfolio with 2 subportfolios, each one with an account
+	-contains a transaction"
+	
+	|mainPortfolio subPortfolio1 account1 
+	subPortfolio2 account2
+	subPortfolio3 account3|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100* peso on: account1.
+	subPortfolio1 := (Portfolio initializeWith: account1).
+
+	account2 := ReceptiveAccount new.
+	Deposit register: 100* peso on: account2.	
+	Deposit register: 100* peso on: account2.	
+	subPortfolio2 := (Portfolio initializeWith: account2).
+	
+	account3 := ReceptiveAccount new.
+	Deposit register: 100* peso on: account3.	
+	Deposit register: 100* peso on: account3.	
+	Deposit register: 100* peso on: account3.	
+	subPortfolio3 := (Portfolio initializeWith: account3).
+	
+	mainPortfolio := ((Portfolio initializeWith: subPortfolio1) add: subPortfolio2) add: subPortfolio3.
+	
+	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account1) size.
+	self assert: 2 equals: (mainPortfolio getTransactionsFromAccount: account2) size.
+	self assert: 3 equals: (mainPortfolio getTransactionsFromAccount: account3) size.
+	! !
+
+!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 17:08:48'!
+test24
+	
+	"Portfolio with 2 subportfolios each one with an account.
+	-We ask for transactions of a third inexistent account"
+	
+	|mainPortfolio subPortfolio1 account1 
+	subPortfolio2 account2
+	account3|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100* peso on: account1.
+	subPortfolio1 := (Portfolio initializeWith: account1).
+
+	account2 := ReceptiveAccount new.
+	Deposit register: 100* peso on: account2.	
+	Deposit register: 100* peso on: account2.	
+	subPortfolio2 := (Portfolio initializeWith: account2).
+	
+	account3 := ReceptiveAccount new.
+	Deposit register: 100* peso on: account3.	
+	Deposit register: 100* peso on: account3.	
+	Deposit register: 100* peso on: account3.	
+	
+	mainPortfolio := ((Portfolio initializeWith: subPortfolio1) add: subPortfolio2).
+	
+	self assert: 0 equals: (mainPortfolio getTransactionsFromAccount: account3) size.
+	! !
 
 
 !PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
