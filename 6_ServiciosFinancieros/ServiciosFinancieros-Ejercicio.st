@@ -684,13 +684,13 @@ getTransactionsFromAccount: aReceptiveAccount
 	^ OrderedCollection new.
 	! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:40:02'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/8/2022 20:27:06'!
 hasRegistered: transaction
 
 	|answer|
 	answer := false.
 	accountList do: [ :anAccount | 
-		answer := ((anAccount hasRegistered: transaction) for: answer)].
+		answer := ((anAccount hasRegistered: transaction) or: answer)].
 	^answer
 	
 	
@@ -796,14 +796,12 @@ Transfer class
 NegativeTransferValueError
 	^'transfer value cannot be negative'! !
 
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 16:24:30'!
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'SG 6/8/2022 20:25:16'!
 register: aValue from: aSenderAccount to: aReceiverAccount
 	|transfer|
 	aValue < 0 ifTrue: [self error: self NegativeTransferValueError ].
 	
 	transfer := self new initializeFor: aValue from: aSenderAccount to: aReceiverAccount.
-	aSenderAccount register: transfer.
-	aReceiverAccount register: transfer.
 	^transfer
 	! !
 
