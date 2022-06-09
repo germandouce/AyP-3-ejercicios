@@ -5,19 +5,6 @@ TestCase subclass: #PortolioTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:19:36'!
-test11
-	
-	"Empty Portfolio inside another porfolio"
-	|mainPortfolio subPortfolio|
-	
-	subPortfolio := Portfolio new.
-	
-	mainPortfolio := (Portfolio initializeWith: subPortfolio).
-
-	
-	self assert: 0 equals: mainPortfolio balance.! !
-
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:38'!
 test11EmptyPortfolioInsideAnotherPortfolioHasCeroBalance
 	
@@ -26,22 +13,6 @@ test11EmptyPortfolioInsideAnotherPortfolioHasCeroBalance
 	subPortfolio := Portfolio new.
 	
 	mainPortfolio := (Portfolio initializeWith: subPortfolio).
-
-	
-	self assert: 0 equals: mainPortfolio balance.! !
-
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:20:03'!
-test12
-	
-	"Portfolio with ONE empty account inside another porfolio"
-	
-	|mainPortfolio subPortfolio account|
-	
-	account := ReceptiveAccount new.
-	
-	subPortfolio := Portfolio initializeWith: account.
-	
-	mainPortfolio := Portfolio initializeWith: subPortfolio.
 
 	
 	self assert: 0 equals: mainPortfolio balance.! !
@@ -60,24 +31,6 @@ test12PortfolioWithOneEmptyAccountInsideAnotherPorfolioHasCeroBalance
 	
 	self assert: 0 equals: mainPortfolio balance.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:21:44'!
-test13
-	
-	"Portfolio with one NOT empty account inside another porfolio"
-	
-	|mainPortfolio subPortfolio account|
-	
-	account := ReceptiveAccount new.
-	
-	Deposit register: 100* peso on: account.
-	
-	subPortfolio := Portfolio initializeWith: account.
-	
-	mainPortfolio := Portfolio initializeWith: subPortfolio.
-
-	
-	self assert: 100* peso equals: mainPortfolio balance.! !
-
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:24'!
 test13PortfolioWithOneNotEmptyAccountInsideAnotherPorfolioHasItsOnlyAccountBalance
 		
@@ -94,26 +47,6 @@ test13PortfolioWithOneNotEmptyAccountInsideAnotherPorfolioHasItsOnlyAccountBalan
 	
 	self assert: 100* peso equals: mainPortfolio balance.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:24:47'!
-test14
-	
-	"Portfolio with 2 accounts inside another porfolio"
-	
-	|mainPortfolio subPortfolio account1 account2|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100* peso on: account1.
-	
-	account2 := ReceptiveAccount new.
-	Deposit register: 200* peso on: account2.
-	
-	subPortfolio := (Portfolio initializeWith: account1) add: account2.
-	
-	mainPortfolio := Portfolio initializeWith: subPortfolio.
-
-	
-	self assert: 300* peso equals: mainPortfolio balance.! !
-
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:19'!
 test14PortfolioWithTwoAccountsInsideAnotherPorfolioHasTotalBalanceOfTheSumOfitsAccounts
 		
@@ -128,26 +61,6 @@ test14PortfolioWithTwoAccountsInsideAnotherPorfolioHasTotalBalanceOfTheSumOfitsA
 	subPortfolio := (Portfolio initializeWith: account1) add: account2.
 	
 	mainPortfolio := Portfolio initializeWith: subPortfolio.
-
-	
-	self assert: 300* peso equals: mainPortfolio balance.! !
-
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:27:19'!
-test15
-	
-	"Portfolio with 2 subportfolios, each one with an account"
-	
-	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100* peso on: account1.
-	subPortfolio1 := (Portfolio initializeWith: account1).
-
-	account2 := ReceptiveAccount new.
-	Deposit register: 200* peso on: account2.	
-	subPortfolio2 := (Portfolio initializeWith: account2).
-	
-	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2.
 
 	
 	self assert: 300* peso equals: mainPortfolio balance.! !
@@ -170,26 +83,6 @@ test15PortfolioWithTwoSubportfoliosEachOneWithAnAccountHasTotalBalanceOfTheSumOf
 	
 	self assert: 300* peso equals: mainPortfolio balance.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:38:41'!
-test16
-
-	"Portfolio with one NOT empty account inside another porfolio
-	- Contains a specific transaction "
-	
-	
-	|mainPortfolio subPortfolio account transaction|
-	
-	account := ReceptiveAccount new.
-	
-	transaction := Deposit register: 100* peso on: account.
-	
-	subPortfolio := Portfolio initializeWith: account.
-	
-	mainPortfolio := Portfolio initializeWith: subPortfolio.
-
-	
-	self assert: (mainPortfolio hasRegistered: transaction).! !
-
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:11'!
 test16PortfolioWithOneNonEmptyAccountInsideAnotherPorfolioAnswersIfItsAccountHasRegisteredATransaction
 	
@@ -205,28 +98,6 @@ test16PortfolioWithOneNonEmptyAccountInsideAnotherPorfolioAnswersIfItsAccountHas
 
 	
 	self assert: (mainPortfolio hasRegistered: transaction).! !
-
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:43:18'!
-test17
-	
-	"Portfolio with 2 accounts inside another porfolio
-	-Contains a specific transaction "
-	
-	|mainPortfolio subPortfolio account1 transaction1 account2 transaction2|
-	
-	account1 := ReceptiveAccount new.
-	transaction1 := Deposit register: 100* peso on: account1.
-	
-	account2 := ReceptiveAccount new.
-	transaction2 := Deposit register: 200* peso on: account2.
-	
-	subPortfolio := (Portfolio initializeWith: account1) add: account2.
-	
-	mainPortfolio := Portfolio initializeWith: subPortfolio.
-
-	
-	self assert: (mainPortfolio hasRegistered: transaction1). 
-	self assert: (mainPortfolio hasRegistered: transaction2).! !
 
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:34:03'!
 test17PortfolioWithTwoAccountsInsideAnotherPortfolioAnwsersIfContainsAspecificTransaction
@@ -247,27 +118,6 @@ test17PortfolioWithTwoAccountsInsideAnotherPortfolioAnwsersIfContainsAspecificTr
 	self assert: (mainPortfolio hasRegistered: transaction1). 
 	self assert: (mainPortfolio hasRegistered: transaction2).! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 15:48:34'!
-test18
-	
-	"Portfolio with 2 subportfolios, each one with an account
-	-contains a transaction"
-	
-	|mainPortfolio subPortfolio1 account1 transaction1 subPortfolio2 transaction2 account2|
-	
-	account1 := ReceptiveAccount new.
-	transaction1 := Deposit register: 100* peso on: account1.
-	subPortfolio1 := (Portfolio initializeWith: account1).
-
-	account2 := ReceptiveAccount new.
-	transaction2 := Deposit register: 200* peso on: account2.	
-	subPortfolio2 := (Portfolio initializeWith: account2).
-	
-	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2.
-	
-	self assert: (mainPortfolio hasRegistered: transaction1).
-	self assert: (mainPortfolio hasRegistered: transaction2).! !
-
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:56'!
 test18PortfolioWithTwoSubportfoliosEachOneWithAnAccountAnswersIfItContainsATransaction
 	
@@ -286,21 +136,6 @@ test18PortfolioWithTwoSubportfoliosEachOneWithAnAccountAnswersIfItContainsATrans
 	self assert: (mainPortfolio hasRegistered: transaction1).
 	self assert: (mainPortfolio hasRegistered: transaction2).! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:57:29'!
-test19
-	
-	"Portfolio with one empty portfolio
-	-get all transactions "
-	
-	|mainPortfolio subPortfolio account|
-	
-	account := ReceptiveAccount new.
-	subPortfolio := (Portfolio initializeWith: account).
-
-	mainPortfolio := (Portfolio initializeWith: subPortfolio).
-	
-	self assert: 0 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
-
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:49'!
 test19PortfolioWithOneEmptyPortfolioKnowsCeroTransactions
 	
@@ -312,22 +147,6 @@ test19PortfolioWithOneEmptyPortfolioKnowsCeroTransactions
 	mainPortfolio := (Portfolio initializeWith: subPortfolio).
 	
 	self assert: 0 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
-
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:57:20'!
-test20
-	
-	"Portfolio with NOT empty portfolio
-	-get all transactions "
-	
-	|mainPortfolio subPortfolio account|
-	
-	account := ReceptiveAccount new.
-	Deposit register: 100* peso  on: account.
-	subPortfolio := (Portfolio initializeWith: account).
-
-	mainPortfolio := (Portfolio initializeWith: subPortfolio).
-	
-	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
 
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:44'!
 test20PortfolioWithNonEmptyPortfolioWithOneAccountKnowsItsAccountTransactions
@@ -341,25 +160,6 @@ test20PortfolioWithNonEmptyPortfolioWithOneAccountKnowsItsAccountTransactions
 	mainPortfolio := (Portfolio initializeWith: subPortfolio).
 	
 	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account) size.! !
-
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:30:32'!
-test21
-	
-	"Portfolio with 2 portofolios and 1 account 
-	-gets transactions"
-	
-	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2 |
-	
-	account1 := ReceptiveAccount new.
-	subPortfolio1 := (Portfolio initializeWith: account1).
-	Deposit register: 100* peso  on: account1.
-	
-	account2 := ReceptiveAccount new.
-	subPortfolio2 := (Portfolio initializeWith: account2).
-
-	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2 .
-	
-	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account1) size.! !
 
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:37'!
 test21PortfolioWithTwoSubportofoliosTheFirstOfWhichHasOneAccountInsideKnowsItsAccountTransactions
@@ -378,25 +178,6 @@ test21PortfolioWithTwoSubportofoliosTheFirstOfWhichHasOneAccountInsideKnowsItsAc
 	
 	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account1) size.! !
 
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 16:31:22'!
-test22
-	
-	"Portfolio with 2 portofolios and 1 account 
-	-gets transactions"
-	
-	|mainPortfolio subPortfolio1 account1 subPortfolio2 account2 |
-	
-	account1 := ReceptiveAccount new.
-	subPortfolio1 := (Portfolio initializeWith: account1).
-	
-	account2 := ReceptiveAccount new.
-	subPortfolio2 := (Portfolio initializeWith: account2).
-	Deposit register: 100* peso  on: account2.
-
-	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2 .
-	
-	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account2) size.! !
-
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:28'!
 test22PortfolioWithTwoSubportofoliosTheSecondOfWhichHasOneAccountInsideKnowsItsAccountTransactions
 	
@@ -412,38 +193,6 @@ test22PortfolioWithTwoSubportofoliosTheSecondOfWhichHasOneAccountInsideKnowsItsA
 	mainPortfolio := (Portfolio initializeWith: subPortfolio1) add: subPortfolio2 .
 	
 	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account2) size.! !
-
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 17:04:14'!
-test23
-	
-	"Portfolio with 2 subportfolios, each one with an account
-	-contains a transaction"
-	
-	|mainPortfolio subPortfolio1 account1 
-	subPortfolio2 account2
-	subPortfolio3 account3|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100* peso on: account1.
-	subPortfolio1 := (Portfolio initializeWith: account1).
-
-	account2 := ReceptiveAccount new.
-	Deposit register: 100* peso on: account2.	
-	Deposit register: 100* peso on: account2.	
-	subPortfolio2 := (Portfolio initializeWith: account2).
-	
-	account3 := ReceptiveAccount new.
-	Deposit register: 100* peso on: account3.	
-	Deposit register: 100* peso on: account3.	
-	Deposit register: 100* peso on: account3.	
-	subPortfolio3 := (Portfolio initializeWith: account3).
-	
-	mainPortfolio := ((Portfolio initializeWith: subPortfolio1) add: subPortfolio2) add: subPortfolio3.
-	
-	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account1) size.
-	self assert: 2 equals: (mainPortfolio getTransactionsFromAccount: account2) size.
-	self assert: 3 equals: (mainPortfolio getTransactionsFromAccount: account3) size.
-	! !
 
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:33:17'!
 test23PortfolioWithTwoSubportfoliosEachOneWithAnAccountKnowsItsAccountsTransactions
@@ -472,35 +221,6 @@ test23PortfolioWithTwoSubportfoliosEachOneWithAnAccountKnowsItsAccountsTransacti
 	self assert: 1 equals: (mainPortfolio getTransactionsFromAccount: account1) size.
 	self assert: 2 equals: (mainPortfolio getTransactionsFromAccount: account2) size.
 	self assert: 3 equals: (mainPortfolio getTransactionsFromAccount: account3) size.
-	! !
-
-!PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 17:08:48'!
-test24
-	
-	"Portfolio with 2 subportfolios each one with an account.
-	-We ask for transactions of a third inexistent account"
-	
-	|mainPortfolio subPortfolio1 account1 
-	subPortfolio2 account2
-	account3|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100* peso on: account1.
-	subPortfolio1 := (Portfolio initializeWith: account1).
-
-	account2 := ReceptiveAccount new.
-	Deposit register: 100* peso on: account2.	
-	Deposit register: 100* peso on: account2.	
-	subPortfolio2 := (Portfolio initializeWith: account2).
-	
-	account3 := ReceptiveAccount new.
-	Deposit register: 100* peso on: account3.	
-	Deposit register: 100* peso on: account3.	
-	Deposit register: 100* peso on: account3.	
-	
-	mainPortfolio := ((Portfolio initializeWith: subPortfolio1) add: subPortfolio2).
-	
-	self assert: 0 equals: (mainPortfolio getTransactionsFromAccount: account3) size.
 	! !
 
 !PortolioTest methodsFor: 'PortofolioWithPorfoliosTests' stamp: 'GD 6/8/2022 18:32:29'!
@@ -542,18 +262,6 @@ test00ANewPortfolioIsCreatedWithCeroBalance
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:53:52'!
-test00SeCreaUnPortfollioSinSaldo
-	
-	| portfolio |
-	
-	portfolio := Portfolio new.
-	
-	self assert: 0 equals: portfolio balance
-	
-	
-	! !
-
 !PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:27:22'!
 test01APortfolioWithAnAccountIsCreatedWithCeroBalance
 	
@@ -563,34 +271,6 @@ test01APortfolioWithAnAccountIsCreatedWithCeroBalance
 	portfolio := Portfolio initializeWith: account.
 	
 	self assert: 0 equals: portfolio balance
-	
-	
-	! !
-
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:52:26'!
-test01SeCreaUnPortfollioSinSaldo
-	
-	|account portfolio|
-	
-	account := ReceptiveAccount new.
-	portfolio := Portfolio initializeWith: account.
-	
-	self assert: 0 equals: portfolio balance
-	
-	
-	! !
-
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 20:56:30'!
-test02PortfolioConCuentaConSaldoDevuelveElSaldoDeLaCuenta
-	
-	|account portfolio|
-	
-	account := ReceptiveAccount new.
-	Deposit register: 100 * peso on: account.
-	
-	portfolio := Portfolio initializeWith: account.
-	
-	self assert: 100 * peso equals: portfolio balance
 	
 	
 	! !
@@ -606,24 +286,6 @@ test02PortfolioWithOneAccountHasHasSameBalanceAsAccountContained
 	portfolio := Portfolio initializeWith: account.
 	
 	self assert: 100 * peso equals: portfolio balance
-	
-	
-	! !
-
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
-test03PortfolioConVariasCuentasDevuelveElBalanceTotal
-	
-	|account1 account2 portfolio|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100 * peso on: account1.
-	
-	account2 := ReceptiveAccount new.
-	Deposit register: 200 * peso on: account2.
-	
-	portfolio := (Portfolio initializeWith: account1) add: account2.
-	
-	self assert: 300 * peso equals: portfolio balance
 	
 	
 	! !
@@ -646,21 +308,6 @@ test03PortfolioWithManyAccountsHasBalanceOfAllAccountsTotalBalance
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'SG 6/6/2022 21:44:58'!
-test04
-	
-	|account transaction portfolio|
-	
-	account := ReceptiveAccount new.
-	transaction := Deposit register: 100 * peso on: account.
-	
-	portfolio := Portfolio initializeWith: account.
-	
-	self assert: (portfolio hasRegistered: transaction). 
-	
-	
-	! !
-
 !PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 17:59:45'!
 test04PortfolioWithOneAccountCanAnswerIfItsAccountHasRegisteredATransaction
 	
@@ -670,24 +317,6 @@ test04PortfolioWithOneAccountCanAnswerIfItsAccountHasRegisteredATransaction
 	transaction := Deposit register: 100 * peso on: account.
 	
 	portfolio := Portfolio initializeWith: account.
-	
-	self assert: (portfolio hasRegistered: transaction). 
-	
-	
-	! !
-
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 13:50:45'!
-test05
-	
-	|account1 account2 transaction portfolio|
-	
-	account1 := ReceptiveAccount new.
-	transaction := Deposit register: 100 * peso on: account1.
-	
-	account2 := ReceptiveAccount new.
-	Deposit register: 300 * peso on: account2.
-	
-	portfolio := (Portfolio initializeWith: account1) add: account2 .
 	
 	self assert: (portfolio hasRegistered: transaction). 
 	
@@ -712,20 +341,6 @@ test05PortfolioWithManyAccountsCanAnswerIfItsAccountsContainATransaction
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:08:53'!
-test06
-	
-	|account portfolio|
-	
-	account := ReceptiveAccount new.
-	
-	portfolio := Portfolio new. 
-	
-	self assert: 0 equals: (portfolio getTransactionsFromAccount: account) size. 
-	
-	
-	! !
-
 !PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 18:00:53'!
 test06EmptyPortfolioKnowsCeroTransactions
 	
@@ -736,21 +351,6 @@ test06EmptyPortfolioKnowsCeroTransactions
 	portfolio := Portfolio new. 
 	
 	self assert: 0 equals: (portfolio getTransactionsFromAccount: account) size. 
-	
-	
-	! !
-
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:08:13'!
-test07
-	
-	|account portfolio|
-	
-	account := ReceptiveAccount new.
-	Deposit register: 100 * peso on: account.
-	
-	portfolio := (Portfolio initializeWith: account). 
-	
-	self assert: 1 equals: (portfolio getTransactionsFromAccount: account) size. 
 	
 	
 	! !
@@ -766,24 +366,6 @@ test07PortfolioWithOneAccountKnowsOneTransaction
 	portfolio := (Portfolio initializeWith: account). 
 	
 	self assert: 1 equals: (portfolio getTransactionsFromAccount: account) size. 
-	
-	
-	! !
-
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:32:07'!
-test08
-	
-	|account1 account2  portfolio|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100 * peso on: account1.
-	
-	account2 := ReceptiveAccount new.
-	Deposit register: 300 * peso on: account2.
-	
-	portfolio := Portfolio initializeWith: account1.
-	
-	self assert: 0 equals: (portfolio getTransactionsFromAccount: account2) size. 
 	
 	
 	! !
@@ -806,26 +388,6 @@ test08PortfolioWhichDoesNotInlcudeAnAccountDoesNotKnowItsRegisteredTransactions
 	
 	! !
 
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:51:52'!
-test09
-	
-	|account1 account2  portfolio|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100 * peso on: account1.
-	
-	account2 := ReceptiveAccount new.
-	Deposit register: 300 * peso on: account2.
-	Deposit register: 301 * peso on: account2.
-			
-	portfolio := (Portfolio initializeWith: account1) add: account2.
-	
-	self assert: 1 equals: (portfolio getTransactionsFromAccount: account1) size. 
-	self assert: 2 equals: (portfolio getTransactionsFromAccount: account2) size. 
-	
-	
-	! !
-
 !PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 18:02:47'!
 test09PortfolioWithManyAccountsKnowsItsAccountsTransctions
 	
@@ -843,27 +405,6 @@ test09PortfolioWithManyAccountsKnowsItsAccountsTransctions
 	self assert: 1 equals: (portfolio getTransactionsFromAccount: account1) size. 
 	self assert: 2 equals: (portfolio getTransactionsFromAccount: account2) size. 
 	
-	
-	! !
-
-!PortolioTest methodsFor: 'PortofoliosWithAccountsTests' stamp: 'GD 6/8/2022 14:57:44'!
-test10
-	
-	|account1 account2  portfolio account3|
-	
-	account1 := ReceptiveAccount new.
-	Deposit register: 100 * peso on: account1.
-	
-	account2 := ReceptiveAccount new.
-	Deposit register: 300 * peso on: account2.
-	Deposit register: 301 * peso on: account2.
-			
-	account3 := ReceptiveAccount new.
-	
-	portfolio := (Portfolio initializeWith: account1) add: account2.
-	
-	self assert: 0 equals: (portfolio getTransactionsFromAccount: account3) size. 
-
 	
 	! !
 
@@ -889,8 +430,8 @@ test10PortfolioWithTwoAccountsDoesNotKnowAThirdAccountTransactions
 	! !
 
 
-!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/8/2022 17:30:16'!
-test25
+!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 03:27:43'!
+test25PortfolioWithAnAccountCantAddThatAccountAgain
 	| portfolio account |
 	
 	account := ReceptiveAccount new.
@@ -899,9 +440,66 @@ test25
 	
 	self
 		should: [ portfolio add: account ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: Portfolio AccountAlreadyInPortfolioError equals: anError messageText]! !
+
+!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 03:32:10'!
+test26PortfolioCantAddAccountIfItsPresentInASubPortfolio
+	| mainPortfolio subPortfolio account |
+	
+	account := ReceptiveAccount new.
+	
+	subPortfolio := Portfolio initializeWith: account.
+	mainPortfolio := Portfolio initializeWith: subPortfolio.
+	
+	self
+		should: [ mainPortfolio add: account ]
 		raise: Error 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Portfolio AccountAlreadyInPortfolioError ]! !
+
+!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 03:32:40'!
+test27PortfolioCannotAddItself
+	| portfolio |
+	
+	portfolio := Portfolio new.
+	
+	self
+		should: [ portfolio add: portfolio ]
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio SamePortfolioError ]! !
+
+!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 04:23:49'!
+test28PortfolioWithAccoundCannotAddPortfolioWithSameAccount
+	| mainPortfolio subPortfolio account |
+	
+	account := ReceptiveAccount new.
+	
+	subPortfolio := Portfolio new.
+	mainPortfolio := (Portfolio initializeWith: subPortfolio) add: account.
+	
+	self
+		should: [ subPortfolio add: account ]
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio AccountAlreadyInPortfolioError ]! !
+
+!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 04:34:52'!
+test29
+	| mainPortfolio subPortfolio account |
+	'
+	account := ReceptiveAccount new.
+	
+	subPortfolio := Portfolio initializeWith: account.
+	mainPortfolio := Portfolio initializeWith: account.
+	
+	self
+		should: [ mainPortfolio add: subPortfolio ]
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio AccountAlreadyInPortfolioError ]'! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -1153,20 +751,50 @@ for: aValue
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Portfolio
-	instanceVariableNames: 'accountList'
+	instanceVariableNames: 'accountList superiorPortfolio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
-add: anAccount
-	accountList add: anAccount ! !
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 04:15:02'!
+hasSuperiorPortfolio
+	Transcript show: (superiorPortfolio = self).
+	^(superiorPortfolio = 0) ifTrue:[^false] ifFalse:[^true].! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 15:08:49'!
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 04:33:50'!
+includesAccount: anAccount
+	(anAccount = self) ifTrue: [^self error: self class SamePortfolioError].
+	
+	(self hasSuperiorPortfolio) ifTrue: [^superiorPortfolio includesAccount: anAccount].
+	^ self includesAccountInPortfolio: anAccount.! !
+
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 04:22:07'!
+includesAccountInPortfolio: anAccount
+	accountList do: [ :account | (account includesAccountInPortfolio: anAccount ) ifTrue: [^true]].
+	^false! !
+
+
+!Portfolio methodsFor: 'initialization' stamp: 'SG 6/9/2022 04:14:55'!
+initialize
+	accountList := OrderedCollection new.
+	superiorPortfolio := 0.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'SG 6/9/2022 03:39:29'!
+setSuperiorPortfolio: aPortfolio
+	superiorPortfolio := aPortfolio ! !
+
+
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 03:42:31'!
+add: anAccount
+	(self includesAccount: anAccount) ifTrue: [^self error: self class AccountAlreadyInPortfolioError].
+	accountList add: anAccount.
+	anAccount setSuperiorPortfolio: self. ! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'GD 6/8/2022 15:08:49'!
 balance
 	^accountList sum: [ :account | account balance ] ifEmpty: [ 0 ]! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 16:50:19'!
+!Portfolio methodsFor: 'main protocol' stamp: 'GD 6/8/2022 16:50:19'!
 getTransactionsFromAccount: aReceptiveAccount 
 	
 	|resultado|
@@ -1186,7 +814,7 @@ getTransactionsFromAccount: aReceptiveAccount
 	^ OrderedCollection new.
 	! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/8/2022 20:27:06'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/8/2022 20:27:06'!
 hasRegistered: transaction
 
 	|answer|
@@ -1198,22 +826,27 @@ hasRegistered: transaction
 	
 	! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/6/2022 20:32:24'!
-initialize
-	accountList := OrderedCollection new.! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 13:50:45'!
+!Portfolio class methodsFor: 'initialization' stamp: 'GD 6/8/2022 13:50:45'!
 initializeWith: anAccount
 	| portfolio |
 	portfolio := self new add: anAccount.
 	
 	^portfolio! !
+
+
+!Portfolio class methodsFor: 'error' stamp: 'SG 6/9/2022 03:00:09'!
+AccountAlreadyInPortfolioError
+	^'Account already present in the selected portfolio'! !
+
+!Portfolio class methodsFor: 'error' stamp: 'SG 6/9/2022 03:01:03'!
+SamePortfolioError
+	^'Cant add portfolio to itself'! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -1251,6 +884,15 @@ transactions
 
 	^ transactions copy! !
 
+
+!ReceptiveAccount methodsFor: 'private' stamp: 'SG 6/9/2022 04:22:27'!
+includesAccountInPortfolio: anAccount
+	^self = anAccount ! !
+
+!ReceptiveAccount methodsFor: 'private' stamp: 'SG 6/9/2022 03:44:33'!
+setSuperiorPortfolio: aPortfolio
+	^self! !
+
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transfer
@@ -1266,25 +908,16 @@ initializeFor: aValue from: aSenderAccount to: aReceiverAccount
 	depositAccount := TransferDeposit register: self on: aReceiverAccount.! !
 
 
-!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:25:24'!
+!Transfer methodsFor: 'getters' stamp: 'GD 6/8/2022 19:25:24'!
 getDepositAccount
 	^depositAccount	! !
 
-!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:25:31'!
+!Transfer methodsFor: 'getters' stamp: 'GD 6/8/2022 19:25:31'!
 getWithdrawAccount
 	^withdrawAccount
 	! !
 
-!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:25:50'!
-transactionValueFor: anAccount
-	anAccount = senderAccount ifTrue: [
-		^value negated
-	].
-	anAccount = receiverAccount ifTrue: [
-		^value
-	]! !
-
-!Transfer methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 15:46:50'!
+!Transfer methodsFor: 'getters' stamp: 'GD 6/6/2022 15:46:50'!
 value
 	^value! !
 
@@ -1294,11 +927,7 @@ value
 Transfer class
 	instanceVariableNames: ''!
 
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'GD 6/6/2022 16:21:20'!
-NegativeTransferValueError
-	^'transfer value cannot be negative'! !
-
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'SG 6/8/2022 20:25:16'!
+!Transfer class methodsFor: 'instance creation' stamp: 'SG 6/8/2022 20:25:16'!
 register: aValue from: aSenderAccount to: aReceiverAccount
 	|transfer|
 	aValue < 0 ifTrue: [self error: self NegativeTransferValueError ].
@@ -1306,6 +935,11 @@ register: aValue from: aSenderAccount to: aReceiverAccount
 	transfer := self new initializeFor: aValue from: aSenderAccount to: aReceiverAccount.
 	^transfer
 	! !
+
+
+!Transfer class methodsFor: 'error' stamp: 'GD 6/6/2022 16:21:20'!
+NegativeTransferValueError
+	^'transfer value cannot be negative'! !
 
 
 !classDefinition: #TransferMember category: 'ServiciosFinancieros-Ejercicio'!
@@ -1321,7 +955,7 @@ Object subclass: #TransferMember
 TransferMember class
 	instanceVariableNames: ''!
 
-!TransferMember class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:52:31'!
+!TransferMember class methodsFor: 'instance creation' stamp: 'GD 6/8/2022 19:52:31'!
 register: aValue on: account
 
 	| transaction |
@@ -1339,22 +973,23 @@ TransferMember subclass: #TransferDeposit
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:25:14'!
+!TransferDeposit methodsFor: 'main protocol' stamp: 'GD 6/8/2022 19:25:14'!
 counterpart
 	^transfer getWithdrawAccount.! !
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 20:03:18'!
+!TransferDeposit methodsFor: 'main protocol' stamp: 'GD 6/8/2022 19:43:42'!
+transactionValueFor: anAccount
+	^ transfer value.! !
+
+
+!TransferDeposit methodsFor: 'initialization' stamp: 'GD 6/8/2022 20:03:18'!
 initializeFor: aTransfer
 	transfer := aTransfer.! !
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:10:47'!
+!TransferDeposit methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:10:47'!
 initializeWith: aTransfer to: aDepositAccount
 	transfer := aTransfer.
 	depositAccount := aDepositAccount.! !
-
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:43:42'!
-transactionValueFor: anAccount
-	^ transfer value.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1362,12 +997,12 @@ transactionValueFor: anAccount
 TransferDeposit class
 	instanceVariableNames: ''!
 
-!TransferDeposit class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:34:52'!
+!TransferDeposit class methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:34:52'!
 for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-!TransferDeposit class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:16:54'!
+!TransferDeposit class methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:16:54'!
 initializeWith: aTransfer to: aDepositAccount
 	|senderAccount|
 	senderAccount := self new initializeWith: aTransfer to: aDepositAccount.
@@ -1381,22 +1016,23 @@ TransferMember subclass: #TransferWithdraw
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:24:52'!
+!TransferWithdraw methodsFor: 'main protocol' stamp: 'GD 6/8/2022 19:24:52'!
 counterpart
 	^transfer getDepositAccount.! !
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:37:11'!
+!TransferWithdraw methodsFor: 'main protocol' stamp: 'GD 6/8/2022 19:43:54'!
+transactionValueFor: anAccount
+	^ transfer value negated.! !
+
+
+!TransferWithdraw methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:37:11'!
 initializeFor: aValue
 	transfer := aValue ! !
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:14:59'!
+!TransferWithdraw methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:14:59'!
 initializeWith: aTransfer to: aWithdrawAccount
 	transfer := aTransfer.
 	withdrawAccount := aWithdrawAccount.! !
-
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:43:54'!
-transactionValueFor: anAccount
-	^ transfer value negated.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1404,11 +1040,11 @@ transactionValueFor: anAccount
 TransferWithdraw class
 	instanceVariableNames: ''!
 
-!TransferWithdraw class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:40:02'!
+!TransferWithdraw class methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:40:02'!
 for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-!TransferWithdraw class methodsFor: 'as yet unclassified' stamp: 'GD 6/8/2022 19:15:59'!
+!TransferWithdraw class methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:15:59'!
 initializeWith: aTransfer to: aWithdrawAccount
 	^ self new initializeWith: aTransfer to: aWithdrawAccount.! !
