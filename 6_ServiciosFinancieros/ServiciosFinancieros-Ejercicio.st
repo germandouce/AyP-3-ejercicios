@@ -444,8 +444,8 @@ test25PortfolioWithAnAccountCantAddThatAccountAgain
 		withExceptionDo: [ :anError |
 			self assert: Portfolio AccountAlreadyInPortfolioError equals: anError messageText]! !
 
-!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 03:32:10'!
-test26PortfolioCantAddAccountIfItsPresentInASubPortfolio
+!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 14:52:13'!
+test26PortfolioCannotAddAccountIfItIsPresentInASubPortfolio
 	| mainPortfolio subPortfolio account |
 	
 	account := ReceptiveAccount new.
@@ -768,11 +768,18 @@ includesAccount: anAccount
 	(self hasSuperiorPortfolio) ifTrue: [^superiorPortfolio includesAccount: anAccount].
 	^self includesAccountInPortfolio: anAccount.! !
 
-!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 12:54:24'!
-includesAccountInPortfolio: anAccount
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 14:53:22'!
+includesAccountInPortfolio: aBankEntity
 	bankEntitiesList do: [ :account | 
-		((account includesAccountInPortfolio: anAccount) or: (anAccount includesAccountInPortfolio: account)) ifTrue: [^true]].
+		((account includesAccountInPortfolio: aBankEntity) or: (aBankEntity includesAccountInPortfolio: account)) ifTrue: [^true]].
 	^false! !
+
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 14:56:37'!
+includesBankEntity: aBankEntity
+	(aBankEntity = self) ifTrue: [^self error: self class SamePortfolioError].
+	
+	(self hasSuperiorPortfolio) ifTrue: [^superiorPortfolio includesAccount: aBankEntity].
+	^self includesAccountInPortfolio: aBankEntity.! !
 
 
 !Portfolio methodsFor: 'initialization' stamp: 'SG 6/9/2022 12:54:32'!
@@ -785,27 +792,27 @@ setSuperiorPortfolio: aPortfolio
 	superiorPortfolio := aPortfolio ! !
 
 
-!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:53:47'!
-add: anAccount
-	(self includesAccount: anAccount) ifTrue: [^self error: self class AccountAlreadyInPortfolioError].
-	bankEntitiesList add: anAccount.
-	anAccount setSuperiorPortfolio: self. ! !
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 14:53:34'!
+add: aBankEntity
+	(self includesAccount: aBankEntity) ifTrue: [^self error: self class AccountAlreadyInPortfolioError].
+	bankEntitiesList add: aBankEntity.
+	aBankEntity setSuperiorPortfolio: self. ! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:53:51'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 14:53:42'!
 balance
-	^bankEntitiesList sum: [ :account | account balance ] ifEmpty: [ 0 ]! !
+	^bankEntitiesList sum: [ :aBankEntity | aBankEntity balance ] ifEmpty: [ 0 ]! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:53:56'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 14:54:00'!
 getTransactionsFromAccount: aReceptiveAccount 
 	
 	|resultado|
 	
-	bankEntitiesList do: [:anAccount |
-		anAccount = aReceptiveAccount ifTrue: [
-			^anAccount transactions
+	bankEntitiesList do: [:aBankEntity |
+		aBankEntity = aReceptiveAccount ifTrue: [
+			^aBankEntity transactions
 			].
-		anAccount class = Portfolio ifTrue: [
-			resultado := anAccount getTransactionsFromAccount: aReceptiveAccount.
+		aBankEntity class = Portfolio ifTrue: [
+			resultado := aBankEntity getTransactionsFromAccount: aReceptiveAccount.
 			resultado size = 0 ifFalse:[	
 				^resultado
 
@@ -815,13 +822,13 @@ getTransactionsFromAccount: aReceptiveAccount
 	^ OrderedCollection new.
 	! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:53:59'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 14:54:18'!
 hasRegistered: transaction
 
 	|answer|
 	answer := false.
-	bankEntitiesList do: [ :anAccount | 
-		answer := ((anAccount hasRegistered: transaction) or: answer)].
+	bankEntitiesList do: [ :aBankEntity | 
+		answer := ((aBankEntity hasRegistered: transaction) or: answer)].
 	^answer
 	
 	
