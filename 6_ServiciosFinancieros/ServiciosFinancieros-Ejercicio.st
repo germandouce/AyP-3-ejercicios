@@ -851,7 +851,7 @@ SamePortfolioError
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions'
+	instanceVariableNames: 'transactions superiorPortfolio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
@@ -860,6 +860,10 @@ Object subclass: #ReceptiveAccount
 initialize
 
 	transactions := OrderedCollection new.! !
+
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'SG 6/9/2022 04:49:41'!
+setSuperiorPortfolio: aPortfolio
+	superiorPortfolio := aPortfolio ! !
 
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'GD 6/8/2022 18:36:57'!
@@ -888,10 +892,6 @@ transactions
 !ReceptiveAccount methodsFor: 'private' stamp: 'SG 6/9/2022 04:22:27'!
 includesAccountInPortfolio: anAccount
 	^self = anAccount ! !
-
-!ReceptiveAccount methodsFor: 'private' stamp: 'SG 6/9/2022 03:44:33'!
-setSuperiorPortfolio: aPortfolio
-	^self! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
@@ -986,11 +986,6 @@ transactionValueFor: anAccount
 initializeFor: aTransfer
 	transfer := aTransfer.! !
 
-!TransferDeposit methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:10:47'!
-initializeWith: aTransfer to: aDepositAccount
-	transfer := aTransfer.
-	depositAccount := aDepositAccount.! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TransferDeposit class' category: 'ServiciosFinancieros-Ejercicio'!
@@ -1028,11 +1023,6 @@ transactionValueFor: anAccount
 !TransferWithdraw methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:37:11'!
 initializeFor: aValue
 	transfer := aValue ! !
-
-!TransferWithdraw methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:14:59'!
-initializeWith: aTransfer to: aWithdrawAccount
-	transfer := aTransfer.
-	withdrawAccount := aWithdrawAccount.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
