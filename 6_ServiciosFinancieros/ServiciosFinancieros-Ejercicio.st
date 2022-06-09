@@ -692,8 +692,8 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'GD 6/6/2022 15:29:36'!
-transactionValueFor: anAccount
+!Deposit methodsFor: 'value' stamp: 'SG 6/9/2022 12:58:46'!
+transactionValue
 
 	^ value! !
 
@@ -727,8 +727,8 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'GD 6/6/2022 15:29:49'!
-transactionValueFor: anAccount
+!Withdraw methodsFor: 'value' stamp: 'SG 6/9/2022 12:58:52'!
+transactionValue
 
 	^ value negated! !
 
@@ -751,7 +751,7 @@ for: aValue
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Portfolio
-	instanceVariableNames: 'accountList superiorPortfolio'
+	instanceVariableNames: 'bankEntitiesList superiorPortfolio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
@@ -768,16 +768,16 @@ includesAccount: anAccount
 	(self hasSuperiorPortfolio) ifTrue: [^superiorPortfolio includesAccount: anAccount].
 	^self includesAccountInPortfolio: anAccount.! !
 
-!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 12:46:00'!
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 12:54:24'!
 includesAccountInPortfolio: anAccount
-	accountList do: [ :account | 
+	bankEntitiesList do: [ :account | 
 		((account includesAccountInPortfolio: anAccount) or: (anAccount includesAccountInPortfolio: account)) ifTrue: [^true]].
 	^false! !
 
 
-!Portfolio methodsFor: 'initialization' stamp: 'SG 6/9/2022 04:14:55'!
+!Portfolio methodsFor: 'initialization' stamp: 'SG 6/9/2022 12:54:32'!
 initialize
-	accountList := OrderedCollection new.
+	bankEntitiesList := OrderedCollection new.
 	superiorPortfolio := 0.! !
 
 !Portfolio methodsFor: 'initialization' stamp: 'SG 6/9/2022 03:39:29'!
@@ -785,22 +785,22 @@ setSuperiorPortfolio: aPortfolio
 	superiorPortfolio := aPortfolio ! !
 
 
-!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 03:42:31'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:53:47'!
 add: anAccount
 	(self includesAccount: anAccount) ifTrue: [^self error: self class AccountAlreadyInPortfolioError].
-	accountList add: anAccount.
+	bankEntitiesList add: anAccount.
 	anAccount setSuperiorPortfolio: self. ! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'GD 6/8/2022 15:08:49'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:53:51'!
 balance
-	^accountList sum: [ :account | account balance ] ifEmpty: [ 0 ]! !
+	^bankEntitiesList sum: [ :account | account balance ] ifEmpty: [ 0 ]! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'GD 6/8/2022 16:50:19'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:53:56'!
 getTransactionsFromAccount: aReceptiveAccount 
 	
 	|resultado|
 	
-	accountList do: [:anAccount |
+	bankEntitiesList do: [:anAccount |
 		anAccount = aReceptiveAccount ifTrue: [
 			^anAccount transactions
 			].
@@ -815,12 +815,12 @@ getTransactionsFromAccount: aReceptiveAccount
 	^ OrderedCollection new.
 	! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/8/2022 20:27:06'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:53:59'!
 hasRegistered: transaction
 
 	|answer|
 	answer := false.
-	accountList do: [ :anAccount | 
+	bankEntitiesList do: [ :anAccount | 
 		answer := ((anAccount hasRegistered: transaction) or: answer)].
 	^answer
 	
@@ -867,10 +867,10 @@ setSuperiorPortfolio: aPortfolio
 	superiorPortfolio := aPortfolio ! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'GD 6/8/2022 18:36:57'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:58:31'!
 balance
 
-	^transactions sum: [ :aTransaction | aTransaction transactionValueFor: self] ifEmpty: [ 0 ].! !
+	^transactions sum: [ :aTransaction | aTransaction transactionValue] ifEmpty: [ 0 ].! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
@@ -969,7 +969,7 @@ register: aValue on: account
 
 !classDefinition: #TransferDeposit category: 'ServiciosFinancieros-Ejercicio'!
 TransferMember subclass: #TransferDeposit
-	instanceVariableNames: 'depositAccount'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
@@ -978,8 +978,8 @@ TransferMember subclass: #TransferDeposit
 counterpart
 	^transfer getWithdrawAccount.! !
 
-!TransferDeposit methodsFor: 'main protocol' stamp: 'GD 6/8/2022 19:43:42'!
-transactionValueFor: anAccount
+!TransferDeposit methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:59:01'!
+transactionValue
 	^ transfer value.! !
 
 
@@ -998,16 +998,10 @@ for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-!TransferDeposit class methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:16:54'!
-initializeWith: aTransfer to: aDepositAccount
-	|senderAccount|
-	senderAccount := self new initializeWith: aTransfer to: aDepositAccount.
-	^senderAccount! !
-
 
 !classDefinition: #TransferWithdraw category: 'ServiciosFinancieros-Ejercicio'!
 TransferMember subclass: #TransferWithdraw
-	instanceVariableNames: 'withdrawAccount'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
@@ -1016,8 +1010,8 @@ TransferMember subclass: #TransferWithdraw
 counterpart
 	^transfer getDepositAccount.! !
 
-!TransferWithdraw methodsFor: 'main protocol' stamp: 'GD 6/8/2022 19:43:54'!
-transactionValueFor: anAccount
+!TransferWithdraw methodsFor: 'main protocol' stamp: 'SG 6/9/2022 12:59:06'!
+transactionValue
 	^ transfer value negated.! !
 
 
@@ -1035,7 +1029,3 @@ TransferWithdraw class
 for: aValue
 
 	^ self new initializeFor: aValue ! !
-
-!TransferWithdraw class methodsFor: 'initialization' stamp: 'GD 6/8/2022 19:15:59'!
-initializeWith: aTransfer to: aWithdrawAccount
-	^ self new initializeWith: aTransfer to: aWithdrawAccount.! !
