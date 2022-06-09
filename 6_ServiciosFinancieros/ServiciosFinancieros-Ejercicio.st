@@ -486,10 +486,10 @@ test28PortfolioWithAccoundCannotAddPortfolioWithSameAccount
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Portfolio AccountAlreadyInPortfolioError ]! !
 
-!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 04:34:52'!
-test29
+!PortolioTest methodsFor: 'Extra tests' stamp: 'SG 6/9/2022 12:49:18'!
+test29PortfolioWithPortfolioWithAccountCannotAddTheSameAccount
 	| mainPortfolio subPortfolio account |
-	'
+	
 	account := ReceptiveAccount new.
 	
 	subPortfolio := Portfolio initializeWith: account.
@@ -499,7 +499,7 @@ test29
 		should: [ mainPortfolio add: subPortfolio ]
 		raise: Error 
 		withExceptionDo: [ :anError |
-			self assert: anError messageText = Portfolio AccountAlreadyInPortfolioError ]'! !
+			self assert: anError messageText = Portfolio AccountAlreadyInPortfolioError ]! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -756,21 +756,22 @@ Object subclass: #Portfolio
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 04:15:02'!
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 12:35:52'!
 hasSuperiorPortfolio
-	Transcript show: (superiorPortfolio = self).
+	Transcript show: (superiorPortfolio = 0).
 	^(superiorPortfolio = 0) ifTrue:[^false] ifFalse:[^true].! !
 
-!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 04:33:50'!
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 12:39:36'!
 includesAccount: anAccount
 	(anAccount = self) ifTrue: [^self error: self class SamePortfolioError].
 	
 	(self hasSuperiorPortfolio) ifTrue: [^superiorPortfolio includesAccount: anAccount].
-	^ self includesAccountInPortfolio: anAccount.! !
+	^self includesAccountInPortfolio: anAccount.! !
 
-!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 04:22:07'!
+!Portfolio methodsFor: 'private' stamp: 'SG 6/9/2022 12:46:00'!
 includesAccountInPortfolio: anAccount
-	accountList do: [ :account | (account includesAccountInPortfolio: anAccount ) ifTrue: [^true]].
+	accountList do: [ :account | 
+		((account includesAccountInPortfolio: anAccount) or: (anAccount includesAccountInPortfolio: account)) ifTrue: [^true]].
 	^false! !
 
 
