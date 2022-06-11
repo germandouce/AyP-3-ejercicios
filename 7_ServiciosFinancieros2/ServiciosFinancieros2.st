@@ -377,6 +377,84 @@ test04APortfolioWithTwoAccountsWithOneTransactionEachGeneratesAnAccountSummaryWi
 	self assert: ((accountSummary showReport) at: 2) equals: 'Extraccion por 50 peso'.
 	self assert: ((accountSummary showReport) at: 3) equals: 'Balance = 50 peso'.! !
 
+
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 15:54:33'!
+test05AnEmptyAccountGeneratesATransferNetWithBalanceZero
+	| transferNet account |
+	
+	account := ReceptiveAccount new.
+	
+	transferNet := TransferNet generateReportFor: account.
+	
+	self assert: (transferNet showReport) equals: 'Neto de transferencias = 0 peso'.
+	! !
+
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 15:37:15'!
+test06AnAccountWithOneTransferGeneratesATransferNet
+	| transferNet1 transferNet2 account1 account2 |
+	
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Transfer amount: 100 * peso from: account1 to: account2.
+	
+	transferNet1 := TransferNet generateReportFor: account1.
+	transferNet2 := TransferNet generateReportFor: account2.
+	
+	
+	self assert: (transferNet1 showReport) equals: 'Neto de transferencias = -100 peso'.
+	self assert: (transferNet2 showReport) equals: 'Neto de transferencias = 100 peso'.! !
+
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 16:00:04'!
+test07AnAccountWithOneDepositAndOneWithdrawGeneratesAZeroTransferNet
+	| transferNet account  |
+	
+	account := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account.
+	Withdraw register: 50 * peso on: account.	
+	
+	transferNet := TransferNet generateReportFor: account.
+	
+	self assert: (transferNet showReport) equals: 'Neto de transferencias = 0 peso'.! !
+
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 16:20:54'!
+test08AnAccountWithMoreThanOneTransferGeneratesATransferNet
+	| transferNet1 transferNet2 account1 account2 |
+	
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Transfer amount: 100 * peso from: account1 to: account2.
+	Transfer amount: 500 * peso from: account2 to: account1.
+	Transfer amount: 300 * peso from: account2 to: account1.
+	
+	transferNet1 := TransferNet generateReportFor: account1.
+	transferNet2 := TransferNet generateReportFor: account2.
+	
+	
+	self assert: (transferNet1 showReport) equals: 'Neto de transferencias = 700 peso'.
+	self assert: (transferNet2 showReport) equals: 'Neto de transferencias = -700 peso'.! !
+
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 16:25:01'!
+test09APortfolioWithTwoAccountsWithOneTransferEachGeneratesATransferNet
+	| transferNet portfolio account1 account2|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	
+	account2 := ReceptiveAccount new.
+	
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Transfer amount: 100 * peso from: account1 to: account2.
+	Transfer amount: 500 * peso from: account2 to: account1.
+	Transfer amount: 300 * peso from: account2 to: account1.
+	
+	portfolio := (Portfolio with: account1) add: account2.
+	
+	transferNet := TransferNet generateReportFor: portfolio.
+	
+	
+	self assert: (transferNet showReport) equals: 'Neto de transferencias = 0 peso'.! !
+
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #TransferTest
@@ -757,6 +835,11 @@ affectBalance: aBalance
 
 	^aBalance + value ! !
 
+!Deposit methodsFor: 'balance' stamp: 'SG 6/11/2022 16:30:59'!
+affectBalanceForNetReport: aBalance
+
+	^ aBalance! !
+
 
 !Deposit methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:19:32'!
 generateStringForReport
@@ -841,6 +924,11 @@ affectBalance: aBalance
 
 	^aBalance + self value! !
 
+!TransferDepositLeg methodsFor: 'balance' stamp: 'SG 6/11/2022 16:29:41'!
+affectBalanceForNetReport: aBalance
+
+	^self affectBalance: aBalance! !
+
 
 !TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:21:32'!
 generateStringForReport
@@ -867,6 +955,11 @@ depositLeg
 affectBalance: aBalance
 
 	^aBalance - self value! !
+
+!TransferWithdrawLeg methodsFor: 'balance' stamp: 'SG 6/11/2022 16:30:41'!
+affectBalanceForNetReport: aBalance
+
+	^self affectBalance: aBalance! !
 
 
 !TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:21:45'!
@@ -900,6 +993,11 @@ value
 affectBalance: aBalance
 
 	^aBalance - value! !
+
+!Withdraw methodsFor: 'balance' stamp: 'SG 6/11/2022 16:31:22'!
+affectBalanceForNetReport: aBalance
+
+	^ aBalance! !
 
 
 !Withdraw methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:19:50'!
@@ -981,10 +1079,42 @@ onlyAccountsCanGenerateAccountSummaryError
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
 Report subclass: #TransferNet
-	instanceVariableNames: ''
+	instanceVariableNames: 'netReport'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 16:32:10'!
+createReportFor: anAccount
+	| netTransfer |
+	
+	netTransfer := (anAccount transactions inject: 0 * peso into: [ :netBalance :aTransaction |
+			aTransaction affectBalanceForNetReport: netBalance 
+			]).
+		
+	netReport := 'Neto de transferencias = ',
+			(netTransfer value amount) printString,
+			' ',
+			 (netTransfer value unit) printString! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 15:30:51'!
+initialize
+	netReport := 'Neto de transferencias = 0'! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 15:29:50'!
+showReport
+	^netReport 
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferNet class' category: 'ServiciosFinancieros-Solucion'!
+TransferNet class
+	instanceVariableNames: ''!
+
+!TransferNet class methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 15:27:02'!
+generateReportFor: anAccount
+	^self new createReportFor: anAccount.! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Solucion'!
