@@ -810,6 +810,18 @@ affectBalance: aBalance
 
 	self subclassResponsibility ! !
 
+!AccountTransaction methodsFor: 'balance' stamp: 'SG 6/11/2022 17:23:04'!
+affectBalance: aBalance for: aReport
+
+	(aReport canBeAdded: self) 
+	ifTrue: [^ self affectBalance: aBalance ]	 
+	ifFalse: [^aBalance]! !
+
+
+!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'SG 6/13/2022 20:59:28'!
+affectBalanceForTransferNet: ANetBalance
+	^self subclassResponsibility ! !
+
 
 !classDefinition: #Deposit category: 'ServiciosFinancieros-Solucion'!
 AccountTransaction subclass: #Deposit
@@ -835,10 +847,9 @@ affectBalance: aBalance
 
 	^aBalance + value ! !
 
-!Deposit methodsFor: 'balance' stamp: 'SG 6/11/2022 16:30:59'!
-affectBalanceForNetReport: aBalance
-
-	^ aBalance! !
+!Deposit methodsFor: 'balance' stamp: 'SG 6/13/2022 20:59:51'!
+affectBalanceForTransferNet: ANetBalance
+	^ANetBalance ! !
 
 
 !Deposit methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:19:32'!
@@ -924,10 +935,9 @@ affectBalance: aBalance
 
 	^aBalance + self value! !
 
-!TransferDepositLeg methodsFor: 'balance' stamp: 'SG 6/11/2022 16:29:41'!
-affectBalanceForNetReport: aBalance
-
-	^self affectBalance: aBalance! !
+!TransferDepositLeg methodsFor: 'balance' stamp: 'SG 6/13/2022 21:01:04'!
+affectBalanceForTransferNet: ANetBalance
+	^self affectBalance: ANetBalance ! !
 
 
 !TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:21:32'!
@@ -956,10 +966,9 @@ affectBalance: aBalance
 
 	^aBalance - self value! !
 
-!TransferWithdrawLeg methodsFor: 'balance' stamp: 'SG 6/11/2022 16:30:41'!
-affectBalanceForNetReport: aBalance
-
-	^self affectBalance: aBalance! !
+!TransferWithdrawLeg methodsFor: 'balance' stamp: 'SG 6/13/2022 21:01:10'!
+affectBalanceForTransferNet: ANetBalance
+	^self affectBalance: ANetBalance ! !
 
 
 !TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:21:45'!
@@ -994,11 +1003,10 @@ affectBalance: aBalance
 
 	^aBalance - value! !
 
-!Withdraw methodsFor: 'balance' stamp: 'SG 6/11/2022 16:31:22'!
-affectBalanceForNetReport: aBalance
 
-	^ aBalance! !
-
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'SG 6/13/2022 21:00:00'!
+affectBalanceForTransferNet: ANetBalance
+	^ANetBalance ! !
 
 !Withdraw methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:19:50'!
 generateStringForReport
@@ -1036,6 +1044,22 @@ Object subclass: #Report
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
+
+!Report methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:27:51'!
+canBeAdded: anAccount
+	^self subclassResponsibility ! !
+
+!Report methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:26:34'!
+createReportFor: anAccount
+	^self subclassResponsibility ! !
+
+!Report methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:27:21'!
+initialize
+	^self subclassResponsibility ! !
+
+!Report methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:26:07'!
+showReport
+	^self subclassResponsibility ! !
 
 
 !classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
@@ -1079,17 +1103,21 @@ onlyAccountsCanGenerateAccountSummaryError
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
 Report subclass: #TransferNet
-	instanceVariableNames: 'netReport'
+	instanceVariableNames: 'netReport permitedClasses'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 16:32:10'!
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:17:27'!
+canBeAdded: anAccount
+	^permitedClasses includes: anAccount class.! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/13/2022 21:01:29'!
 createReportFor: anAccount
 	| netTransfer |
 	
 	netTransfer := (anAccount transactions inject: 0 * peso into: [ :netBalance :aTransaction |
-			aTransaction affectBalanceForNetReport: netBalance 
+			aTransaction affectBalanceForTransferNet: netBalance 
 			]).
 		
 	netReport := 'Neto de transferencias = ',
@@ -1097,9 +1125,10 @@ createReportFor: anAccount
 			' ',
 			 (netTransfer value unit) printString! !
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 15:30:51'!
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:16:01'!
 initialize
-	netReport := 'Neto de transferencias = 0'! !
+	netReport := 'Neto de transferencias = 0'.
+	permitedClasses := OrderedCollection with: TransferDepositLeg with: TransferWithdrawLeg.! !
 
 !TransferNet methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 15:29:50'!
 showReport
