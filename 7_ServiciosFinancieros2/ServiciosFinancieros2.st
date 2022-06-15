@@ -587,7 +587,7 @@ test20AnPortfolioWithOneAccountWithATransferGeneratesAPortfolioDetailedTreePrint
 	equals: (portfolioTreePrinter2 showReport).
 	! !
 
-!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 17:09:50'!
+!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 17:25:01'!
 test21AnPortfolioWithOneAccountAndAPortfolioWithTwoAccountsGeneratesAPortfolioDetailedTreePrinter
 	| portfolioTreePrinter portfolio innerPortfolio mainAccount subAccount1 subAccount2 orderedAssert |
 	
@@ -613,27 +613,28 @@ test21AnPortfolioWithOneAccountAndAPortfolioWithTwoAccountsGeneratesAPortfolioDe
 	
 	portfolioTreePrinter := PortfolioDetailedTreePrinter generateReportFor: portfolio.
 	
-	orderedAssert := OrderedCollection new.
-	orderedAssert add: 'Portfolio de la familia'.
-	orderedAssert add: '    Cuenta Mia'.
-	orderedAssert add: '        Deposito por 100 peso'.
-	orderedAssert add: '        Extraccion por 50 peso'.
-	orderedAssert add: '        Balance = 50 peso'.
-	orderedAssert add: '    Portfolio de hijos'.
-	orderedAssert add: '        Cuenta de Juan'.
-	orderedAssert add: '            Deposito por 200 peso'.
-	orderedAssert add: '            Extraccion por 300 peso'.
-	orderedAssert add: '            Balance = -100 peso'.
-	orderedAssert add: '        Cuenta de Angeles'.
-	orderedAssert add: '            Salida por transferencia de 500 peso'.
-	orderedAssert add: '            Balance = -500 peso'.
-	orderedAssert add: '        Balance = -600 peso'.
-	orderedAssert add: '    Balance = -550 peso'.
+	orderedAssert := OrderedCollection withAll: {
+	'Portfolio de la familia'.
+	'    Cuenta Mia'.
+	'        Deposito por 100 peso'.
+	'        Extraccion por 50 peso'.
+	'        Balance = 50 peso'.
+	'    Portfolio de hijos'.
+	'        Cuenta de Juan'.
+	'            Deposito por 200 peso'.
+	'            Extraccion por 300 peso'.
+	'            Balance = -100 peso'.
+	'        Cuenta de Angeles'.
+	'            Salida por transferencia de 500 peso'.
+	'            Balance = -500 peso'.
+	'        Balance = -600 peso'.
+	'    Balance = -550 peso'
+	}.
 	
 	self assert: orderedAssert equals: (portfolioTreePrinter showReport).
 ! !
 
-!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 17:12:47'!
+!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 17:25:48'!
 test22AnPortfolioWithAPortfolioAndOneAccountGeneratesAPortfolioDetailedTreePrinter
 	| portfolioTreePrinter portfolio innerPortfolio mainAccount subAccount1 subAccount2 orderedAssert |
 	
@@ -659,22 +660,23 @@ test22AnPortfolioWithAPortfolioAndOneAccountGeneratesAPortfolioDetailedTreePrint
 	
 	portfolioTreePrinter := PortfolioDetailedTreePrinter generateReportFor: portfolio.
 	
-	orderedAssert := OrderedCollection new.
-	orderedAssert add: 'Portfolio de la familia'.
-	orderedAssert add: '    Portfolio de hijos'.
-	orderedAssert add: '        Cuenta de Juan'.
-	orderedAssert add: '            Deposito por 200 peso'.
-	orderedAssert add: '            Extraccion por 300 peso'.
-	orderedAssert add: '            Balance = -100 peso'.
-	orderedAssert add: '        Cuenta de Angeles'.
-	orderedAssert add: '            Salida por transferencia de 500 peso'.
-	orderedAssert add: '            Balance = -500 peso'.
-	orderedAssert add: '        Balance = -600 peso'.
-	orderedAssert add: '    Cuenta Mia'.
-	orderedAssert add: '        Deposito por 100 peso'.
-	orderedAssert add: '        Extraccion por 50 peso'.
-	orderedAssert add: '        Balance = 50 peso'.
-	orderedAssert add: '    Balance = -550 peso'.
+	orderedAssert := OrderedCollection withAll: {
+	'Portfolio de la familia'.
+	'    Portfolio de hijos'.
+	'        Cuenta de Juan'.
+	'            Deposito por 200 peso'.
+	'            Extraccion por 300 peso'.
+	'            Balance = -100 peso'.
+	'        Cuenta de Angeles'.
+	'            Salida por transferencia de 500 peso'.
+	'            Balance = -500 peso'.
+	'        Balance = -600 peso'.
+	'    Cuenta Mia'.
+	'        Deposito por 100 peso'.
+	'        Extraccion por 50 peso'.
+	'        Balance = 50 peso'.
+	'    Balance = -550 peso'
+	}.
 	
 	self assert: orderedAssert equals: (portfolioTreePrinter showReport).
 ! !
