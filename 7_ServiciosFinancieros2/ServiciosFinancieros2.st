@@ -309,7 +309,7 @@ TestCase subclass: #ReportsTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/11/2022 15:09:59'!
+!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/15/2022 11:17:00'!
 test01AnEmptyAccountGeneratesAnAccountSummaryWithOneElement
 	| accountSummary account |
 	
@@ -318,11 +318,11 @@ test01AnEmptyAccountGeneratesAnAccountSummaryWithOneElement
 	accountSummary := AccountSummary generateReportFor: account.
 	
 	self assert: 1 equals: (accountSummary showReport) size.
-	self assert: ((accountSummary showReport) at: 1) equals: 'Balance = 0 '.
+	self assert: ((accountSummary showReport) at: 1) equals: 'Balance = 0 peso'.
 	! !
 
-!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/11/2022 15:10:16'!
-test02AnAccountWithOneTransactionGeneratesAnAccountSummaryWithTwoElements
+!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/15/2022 11:10:39'!
+test02AnAccountWithOneDepositGeneratesAnAccountSummaryWithTwoElements
 	| accountSummary account |
 	
 	account := ReceptiveAccount new.
@@ -334,8 +334,41 @@ test02AnAccountWithOneTransactionGeneratesAnAccountSummaryWithTwoElements
 	self assert: ((accountSummary showReport) at: 1) equals: 'Deposito por 100 peso'.
 	self assert: ((accountSummary showReport) at: 2) equals: 'Balance = 100 peso'.! !
 
-!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/11/2022 15:10:42'!
-test03AnAccountWithMoreThanOneTransactionGeneratesAnAccountSummaryWithSameAmountOfElementsPlusOne
+!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/15/2022 11:12:37'!
+test03AnAccountWithOneWithdrawGeneratesAnAccountSummaryWithTwoElements
+	| accountSummary account |
+	
+	account := ReceptiveAccount new.
+	Withdraw register: 200 * peso on: account.
+	
+	accountSummary := AccountSummary generateReportFor: account.
+	
+	self assert: 2 equals: (accountSummary showReport) size.
+	self assert: ((accountSummary showReport) at: 1) equals: 'Extraccion por 200 peso'.
+	self assert: ((accountSummary showReport) at: 2) equals: 'Balance = -200 peso'.! !
+
+!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/15/2022 11:21:51'!
+test04AnAccountWithOneTransferGeneratesAnAccountSummaryWithTwoElements
+	| accountSummary1 accountSummary2 account1 account2 |
+	
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Transfer amount: 300 * peso from: account1 to: account2.
+	
+	accountSummary1 := AccountSummary generateReportFor: account1.
+	accountSummary2 := AccountSummary generateReportFor: account2.
+	
+	self assert: 2 equals: (accountSummary1 showReport) size.
+	self assert: 2 equals: (accountSummary2 showReport) size.
+	
+	self assert: ((accountSummary1 showReport) at: 1) equals: 'Salida por transferencia de 300 peso'.
+	self assert: ((accountSummary1 showReport) at: 2) equals: 'Balance = -300 peso'.
+	
+	self assert: ((accountSummary2 showReport) at: 1) equals: 'Entrada por transferencia de 300 peso'.
+	self assert: ((accountSummary2 showReport) at: 2) equals: 'Balance = 300 peso'.! !
+
+!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/15/2022 11:22:29'!
+test05AnAccountWithMoreThanOneTransactionGeneratesAnAccountSummaryWithSameAmountOfElementsPlusOne
 	| accountSummary account1 account2 |
 	
 	account1 := ReceptiveAccount new.
@@ -358,8 +391,8 @@ test03AnAccountWithMoreThanOneTransactionGeneratesAnAccountSummaryWithSameAmount
 	
 	self assert: ((accountSummary showReport) at: 5) equals: 'Balance = 60 peso'.! !
 
-!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/11/2022 15:09:32'!
-test04APortfolioWithTwoAccountsWithOneTransactionEachGeneratesAnAccountSummaryWithThreeElements
+!ReportsTest methodsFor: 'AccountSummary Tests' stamp: 'SG 6/15/2022 11:22:36'!
+test06APortfolioWithTwoAccountsWithOneTransactionEachGeneratesAnAccountSummaryWithThreeElements
 	| accountSummary portfolio account1 account2|
 	
 	account1 := ReceptiveAccount new.
@@ -378,8 +411,8 @@ test04APortfolioWithTwoAccountsWithOneTransactionEachGeneratesAnAccountSummaryWi
 	self assert: ((accountSummary showReport) at: 3) equals: 'Balance = 50 peso'.! !
 
 
-!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 15:54:33'!
-test05AnEmptyAccountGeneratesATransferNetWithBalanceZero
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/15/2022 11:37:22'!
+test07AnEmptyAccountGeneratesATransferNetWithBalanceZero
 	| transferNet account |
 	
 	account := ReceptiveAccount new.
@@ -389,8 +422,8 @@ test05AnEmptyAccountGeneratesATransferNetWithBalanceZero
 	self assert: (transferNet showReport) equals: 'Neto de transferencias = 0 peso'.
 	! !
 
-!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 15:37:15'!
-test06AnAccountWithOneTransferGeneratesATransferNet
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/15/2022 11:37:31'!
+test08AnAccountWithOneTransferGeneratesATransferNet
 	| transferNet1 transferNet2 account1 account2 |
 	
 	account1 := ReceptiveAccount new.
@@ -404,20 +437,30 @@ test06AnAccountWithOneTransferGeneratesATransferNet
 	self assert: (transferNet1 showReport) equals: 'Neto de transferencias = -100 peso'.
 	self assert: (transferNet2 showReport) equals: 'Neto de transferencias = 100 peso'.! !
 
-!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 16:00:04'!
-test07AnAccountWithOneDepositAndOneWithdrawGeneratesAZeroTransferNet
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/15/2022 11:39:47'!
+test09AnAccountWithOneDepositGeneratesAZeroTransferNet
 	| transferNet account  |
 	
 	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
+	
+	transferNet := TransferNet generateReportFor: account.
+	
+	self assert: (transferNet showReport) equals: 'Neto de transferencias = 0 peso'.! !
+
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/15/2022 11:39:56'!
+test10AnAccountWithOneWithdrawGeneratesAZeroTransferNet
+	| transferNet account  |
+	
+	account := ReceptiveAccount new.
 	Withdraw register: 50 * peso on: account.	
 	
 	transferNet := TransferNet generateReportFor: account.
 	
 	self assert: (transferNet showReport) equals: 'Neto de transferencias = 0 peso'.! !
 
-!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 16:20:54'!
-test08AnAccountWithMoreThanOneTransferGeneratesATransferNet
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/15/2022 11:38:39'!
+test11AnAccountWithMoreThanOneTransferGeneratesATransferNet
 	| transferNet1 transferNet2 account1 account2 |
 	
 	account1 := ReceptiveAccount new.
@@ -433,8 +476,8 @@ test08AnAccountWithMoreThanOneTransferGeneratesATransferNet
 	self assert: (transferNet1 showReport) equals: 'Neto de transferencias = 700 peso'.
 	self assert: (transferNet2 showReport) equals: 'Neto de transferencias = -700 peso'.! !
 
-!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/11/2022 16:25:01'!
-test09APortfolioWithTwoAccountsWithOneTransferEachGeneratesATransferNet
+!ReportsTest methodsFor: 'TransferNet Tests' stamp: 'SG 6/15/2022 11:38:50'!
+test12APortfolioWithTwoAccountsWithOneTransferEachGeneratesATransferNet
 	| transferNet portfolio account1 account2|
 	
 	account1 := ReceptiveAccount new.
@@ -750,11 +793,11 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:24:46'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'SG 6/15/2022 11:16:22'!
 balance
 
 	^transactions 
-		inject: 0
+		inject: 0 * peso
 		into: [ :currentBalance :transaction | transaction affectBalance: currentBalance ]! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/21/2019 18:55:56'!
