@@ -499,6 +499,187 @@ test12APortfolioWithTwoAccountsWithOneTransferEachGeneratesATransferNet
 	self assert: (transferNet showReport) equals: 'Neto de transferencias = 0 peso'.! !
 
 
+!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 16:06:58'!
+test17AnEmptyPortfolioGeneratesAnEmptyPortfolioDetailedTreePrinter
+	| portfolioTreePrinter portfolio |
+	
+	portfolio := Portfolio new named: 'Portfolio vacio'.
+	
+	portfolioTreePrinter := PortfolioDetailedTreePrinter generateReportFor: portfolio.
+	
+	self assert: (portfolioTreePrinter showReport) equals: 
+	(OrderedCollection with: 'Portfolio vacio'
+	with: '    Balance = 0 peso').
+	! !
+
+!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 16:24:38'!
+test18AnPortfolioWithOneAccountGeneratesAPortfolioDetailedTreePrinter
+	| portfolioTreePrinter portfolio account |
+	
+	account := ReceptiveAccount new named: 'Cuenta de Juan'.
+	Deposit register: 100 * peso on: account.
+	
+	portfolio := (Portfolio new named: 'Portfolio de Juan') add: account.
+	
+	portfolioTreePrinter := PortfolioDetailedTreePrinter generateReportFor: portfolio.
+	
+	self assert: (OrderedCollection 
+	with: 'Portfolio de Juan' 
+	with: '    Cuenta de Juan'
+	with: '        Deposito por 100 peso'
+	with: '        Balance = 100 peso'
+	with: '    Balance = 100 peso')
+	equals: (portfolioTreePrinter showReport).
+	! !
+
+!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 16:27:37'!
+test19AnPortfolioWithOneAccountWithAWithdrawGeneratesAPortfolioDetailedTreePrinter
+	| portfolioTreePrinter portfolio account |
+	
+	account := ReceptiveAccount new named: 'Cuenta de Pedro'.
+	Withdraw register: 200 * peso on: account.
+	
+	portfolio := (Portfolio new named: 'Portfolio de Pedro') add: account.
+	
+	portfolioTreePrinter := PortfolioDetailedTreePrinter generateReportFor: portfolio.
+	
+	self assert: (OrderedCollection 
+	with: 'Portfolio de Pedro' 
+	with: '    Cuenta de Pedro'
+	with: '        Extraccion por 200 peso'
+	with: '        Balance = -200 peso'
+	with: '    Balance = -200 peso')
+	equals: (portfolioTreePrinter showReport).
+	! !
+
+!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 16:37:30'!
+test20AnPortfolioWithOneAccountWithATransferGeneratesAPortfolioDetailedTreePrinter
+	| portfolioTreePrinter1 portfolio1 account1 portfolioTreePrinter2 portfolio2 account2|
+	
+	account1 := ReceptiveAccount new named: 'Cuenta de Juan'.
+	portfolio1 := (Portfolio new named: 'Portfolio de Juan') add: account1.
+	
+	
+	account2 := ReceptiveAccount new named: 'Cuenta de Pedro'.
+	portfolio2 := (Portfolio new named: 'Portfolio de Pedro') add: account2.
+	
+	Transfer amount: 300 * peso from: account1 to: account2.
+	
+	portfolioTreePrinter1 := PortfolioDetailedTreePrinter generateReportFor: portfolio1.
+	portfolioTreePrinter2 := PortfolioDetailedTreePrinter generateReportFor: portfolio2.
+	
+	
+	
+	self assert: (OrderedCollection 
+	with: 'Portfolio de Juan' 
+	with: '    Cuenta de Juan'
+	with: '        Salida por transferencia de 300 peso'
+	with: '        Balance = -300 peso'
+	with: '    Balance = -300 peso')
+	equals: (portfolioTreePrinter1 showReport).
+	
+	self assert: (OrderedCollection 
+	with: 'Portfolio de Pedro' 
+	with: '    Cuenta de Pedro'
+	with: '        Entrada por transferencia de 300 peso'
+	with: '        Balance = 300 peso'
+	with: '    Balance = 300 peso')
+	equals: (portfolioTreePrinter2 showReport).
+	! !
+
+!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 17:09:50'!
+test21AnPortfolioWithOneAccountAndAPortfolioWithTwoAccountsGeneratesAPortfolioDetailedTreePrinter
+	| portfolioTreePrinter portfolio innerPortfolio mainAccount subAccount1 subAccount2 orderedAssert |
+	
+	subAccount1 := ReceptiveAccount new named: 'Cuenta de Juan'.
+	subAccount2 := ReceptiveAccount new named: 'Cuenta de Angeles'.
+	
+	innerPortfolio := (((Portfolio new named: 'Portfolio de hijos') 
+	add: subAccount1) add: subAccount2).
+	
+	mainAccount := ReceptiveAccount new named: 'Cuenta Mia'.
+	
+	portfolio := ((Portfolio new named: 'Portfolio de la familia') 
+	add: mainAccount) 
+	add: innerPortfolio.
+	
+	Deposit register: 100 * peso on: mainAccount.
+	Withdraw register: 50 * peso on: mainAccount.
+	
+	Deposit register: 200 * peso on: subAccount1 .
+	Withdraw register: 300 * peso on: subAccount1.
+	
+	Transfer amount: 500 * peso from: subAccount2 to: ReceptiveAccount new.
+	
+	portfolioTreePrinter := PortfolioDetailedTreePrinter generateReportFor: portfolio.
+	
+	orderedAssert := OrderedCollection new.
+	orderedAssert add: 'Portfolio de la familia'.
+	orderedAssert add: '    Cuenta Mia'.
+	orderedAssert add: '        Deposito por 100 peso'.
+	orderedAssert add: '        Extraccion por 50 peso'.
+	orderedAssert add: '        Balance = 50 peso'.
+	orderedAssert add: '    Portfolio de hijos'.
+	orderedAssert add: '        Cuenta de Juan'.
+	orderedAssert add: '            Deposito por 200 peso'.
+	orderedAssert add: '            Extraccion por 300 peso'.
+	orderedAssert add: '            Balance = -100 peso'.
+	orderedAssert add: '        Cuenta de Angeles'.
+	orderedAssert add: '            Salida por transferencia de 500 peso'.
+	orderedAssert add: '            Balance = -500 peso'.
+	orderedAssert add: '        Balance = -600 peso'.
+	orderedAssert add: '    Balance = -550 peso'.
+	
+	self assert: orderedAssert equals: (portfolioTreePrinter showReport).
+! !
+
+!ReportsTest methodsFor: 'PortfolioDetailedTreePrinter Tests' stamp: 'SG 6/15/2022 17:12:47'!
+test22AnPortfolioWithAPortfolioAndOneAccountGeneratesAPortfolioDetailedTreePrinter
+	| portfolioTreePrinter portfolio innerPortfolio mainAccount subAccount1 subAccount2 orderedAssert |
+	
+	subAccount1 := ReceptiveAccount new named: 'Cuenta de Juan'.
+	subAccount2 := ReceptiveAccount new named: 'Cuenta de Angeles'.
+	
+	innerPortfolio := (((Portfolio new named: 'Portfolio de hijos') 
+	add: subAccount1) add: subAccount2).
+	
+	mainAccount := ReceptiveAccount new named: 'Cuenta Mia'.
+	
+	portfolio := ((Portfolio new named: 'Portfolio de la familia') 
+	add: innerPortfolio)
+	add: mainAccount.
+	
+	Deposit register: 100 * peso on: mainAccount.
+	Withdraw register: 50 * peso on: mainAccount.
+	
+	Deposit register: 200 * peso on: subAccount1 .
+	Withdraw register: 300 * peso on: subAccount1.
+	
+	Transfer amount: 500 * peso from: subAccount2 to: ReceptiveAccount new.
+	
+	portfolioTreePrinter := PortfolioDetailedTreePrinter generateReportFor: portfolio.
+	
+	orderedAssert := OrderedCollection new.
+	orderedAssert add: 'Portfolio de la familia'.
+	orderedAssert add: '    Portfolio de hijos'.
+	orderedAssert add: '        Cuenta de Juan'.
+	orderedAssert add: '            Deposito por 200 peso'.
+	orderedAssert add: '            Extraccion por 300 peso'.
+	orderedAssert add: '            Balance = -100 peso'.
+	orderedAssert add: '        Cuenta de Angeles'.
+	orderedAssert add: '            Salida por transferencia de 500 peso'.
+	orderedAssert add: '            Balance = -500 peso'.
+	orderedAssert add: '        Balance = -600 peso'.
+	orderedAssert add: '    Cuenta Mia'.
+	orderedAssert add: '        Deposito por 100 peso'.
+	orderedAssert add: '        Extraccion por 50 peso'.
+	orderedAssert add: '        Balance = 50 peso'.
+	orderedAssert add: '    Balance = -550 peso'.
+	
+	self assert: orderedAssert equals: (portfolioTreePrinter showReport).
+! !
+
+
 !ReportsTest methodsFor: 'PortfolioTreePrinter Tests' stamp: 'SG 6/15/2022 14:09:01'!
 test13AnEmptyPortfolioGeneratesAnEmptyPortfolioTreePrinter
 	| portfolioTreePrinter portfolio |
@@ -735,10 +916,10 @@ named: aName
 	portfolioName := aName! !
 
 
-!Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:19:36'!
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/15/2022 16:09:11'!
 balance
 	
-	^accounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 ]! !
+	^accounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 * peso ]! !
 
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:28:29'!
 hasRegistered: aTransaction
@@ -831,14 +1012,13 @@ signalCanNotAddAccount
 	self error: self class canNotAddAccountErrorMessage! !
 
 
-!Portfolio methodsFor: 'nil' stamp: 'SG 6/15/2022 14:30:08'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:30:08'!
 affectReport: aReport
 	^aReport beAffectedByPortfolio: self.! !
 
-!Portfolio methodsFor: 'nil' stamp: 'SG 6/15/2022 14:13:53'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:13:53'!
 name
 	^portfolioName ! !
-
 
 !Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:56:53'!
 printAccountsInAReport: aReport
@@ -941,6 +1121,12 @@ named: aName
 !ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:13:41'!
 name
 	^accountName ! !
+
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:16:55'!
+printTransactionsInAReport: aReport
+	transactions do: [ :aTransaction | 
+		aTransaction affectReport: aReport
+		]! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
@@ -1177,6 +1363,16 @@ initialize
 showReport
 	^self subclassResponsibility ! !
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Report class' category: 'ServiciosFinancieros-Solucion'!
+Report class
+	instanceVariableNames: ''!
+
+!Report class methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:54:49'!
+generateReportFor: anAccount
+	^self new createReportFor: anAccount.! !
+
 
 !classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
 Report subclass: #AccountSummary
@@ -1243,12 +1439,6 @@ generateString: anAccount
 AccountSummary class
 	instanceVariableNames: ''!
 
-!AccountSummary class methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:59:29'!
-generateReportFor: anAccount
-	"anAccount class = ReceptiveAccount ifFalse: [self error: self onlyAccountsCanGenerateAccountSummaryError]."
-	
-	^self new createReportFor: anAccount.! !
-
 !AccountSummary class methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:38:17'!
 onlyAccountsCanGenerateAccountSummaryError
 	^'Only accounts can generate an accountSummary'! !
@@ -1256,15 +1446,86 @@ onlyAccountsCanGenerateAccountSummaryError
 
 !classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros-Solucion'!
 Report subclass: #PortfolioDetailedTreePrinter
-	instanceVariableNames: ''
+	instanceVariableNames: 'treeCollection space'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:14:04'!
+beAffectedByAccount: aAccount
+	| originalSpace |
+	
+	treeCollection add: space, aAccount name.
+	
+	originalSpace := space copy.
+	space := space, '    '.
+	
+	aAccount printTransactionsInAReport: self.
+	
+	treeCollection add: space, 'Balance = ', (aAccount balance amount) printString, ' ', (aAccount balance unit) printString.
+	
+	space := originalSpace.! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:21:41'!
+beAffectedByDeposit: aDeposit
+	treeCollection add: (space, 'Deposito por ', 
+	(aDeposit value amount) printString,
+	' ', 
+	(aDeposit value unit) printString)! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 17:14:29'!
+beAffectedByPortfolio: aPortfolio
+	| originalSpace |
+	
+	treeCollection add: space, aPortfolio name.
+	
+	originalSpace := space copy.
+	space := space, '    '.
+	
+	aPortfolio printAccountsInAReport: self.
+	
+	treeCollection add: space, 'Balance = ', (aPortfolio balance amount) printString, ' ', (aPortfolio balance unit) printString.
+	
+	space := originalSpace.! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:21:53'!
+beAffectedByTransferDeposit: aTransferDeposit
+	treeCollection add: (space, 'Entrada por transferencia de ', 
+	(aTransferDeposit value amount) printString,
+	' ', 
+	(aTransferDeposit value unit) printString)! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:22:09'!
+beAffectedByTransferWithdraw: aTransferWithdraw
+	treeCollection add: (space, 'Salida por transferencia de ', 
+	(aTransferWithdraw value amount) printString,
+	' ', 
+	(aTransferWithdraw value unit) printString)! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:21:32'!
+beAffectedByWithdraw: aWithdraw
+	treeCollection add: (space, 'Extraccion por ', 
+	(aWithdraw value amount) printString,
+	' ', 
+	(aWithdraw value unit) printString)! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:58:06'!
+createReportFor: anAccount
+	anAccount affectReport: self! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:57:01'!
+initialize
+	treeCollection := OrderedCollection new.
+	space := ''.! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:57:27'!
+showReport
+	^treeCollection ! !
+
 
 !classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros-Solucion'!
 Report subclass: #PortfolioTreePrinter
-	instanceVariableNames: 'treeCollection space spaceCounter'
+	instanceVariableNames: 'treeCollection space'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
@@ -1297,16 +1558,6 @@ initialize
 !PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:22:31'!
 showReport
 	^treeCollection ! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'PortfolioTreePrinter class' category: 'ServiciosFinancieros-Solucion'!
-PortfolioTreePrinter class
-	instanceVariableNames: ''!
-
-!PortfolioTreePrinter class methodsFor: 'nil' stamp: 'SG 6/15/2022 14:02:27'!
-generateReportFor: anAccount
-	^self new createReportFor: anAccount.! !
 
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
@@ -1360,16 +1611,6 @@ initialize
 	netBalance := 0 * peso.
 	netReport := 'Neto de transferencias = 0'.
 	! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'TransferNet class' category: 'ServiciosFinancieros-Solucion'!
-TransferNet class
-	instanceVariableNames: ''!
-
-!TransferNet class methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 15:27:02'!
-generateReportFor: anAccount
-	^self new createReportFor: anAccount.! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Solucion'!
