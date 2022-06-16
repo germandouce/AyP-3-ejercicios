@@ -876,6 +876,10 @@ hasRegistered: aTransaction
 
 	self subclassResponsibility ! !
 
+!Account methodsFor: 'main protocol' stamp: 'SG 6/16/2022 18:15:58'!
+name
+	^self subclassResponsibility ! !
+
 !Account methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 12:23:15'!
 transactions
 
@@ -928,6 +932,10 @@ hasRegistered: aTransaction
 
 	^accounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction ]! !
 
+!Portfolio methodsFor: 'main protocol' stamp: 'SG 6/15/2022 14:13:53'!
+name
+	^portfolioName ! !
+
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:38:32'!
 transactions
 	
@@ -969,6 +977,12 @@ addTransactionsTo: aCollectionOfTransactions
 
 	accounts do: [ :anAccount | anAccount addTransactionsTo: aCollectionOfTransactions ]! !
 
+!Portfolio methodsFor: 'private' stamp: 'SG 6/15/2022 14:56:53'!
+printAccountsInAReport: aReport
+	accounts do: [ :anAccount | 
+		anAccount affectReport: aReport
+		]! !
+
 
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:17:31'!
 addRootParentsTo: rootParents
@@ -981,6 +995,10 @@ addRootParentsTo: rootParents
 addedTo: aPortfolio 
 	
 	parents add: aPortfolio ! !
+
+!Portfolio methodsFor: 'composition' stamp: 'SG 6/15/2022 14:30:08'!
+affectReport: aReport
+	^aReport beAffectedByPortfolio: self.! !
 
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:20:56'!
 anyRootParentIsComposedBy: accountToAdd
@@ -1012,21 +1030,6 @@ rootParents
 signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
-
-
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:30:08'!
-affectReport: aReport
-	^aReport beAffectedByPortfolio: self.! !
-
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:13:53'!
-name
-	^portfolioName ! !
-
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:56:53'!
-printAccountsInAReport: aReport
-	accounts do: [ :anAccount | 
-		anAccount affectReport: aReport
-		]! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1068,6 +1071,10 @@ initialize
 	super initialize.
 	transactions := OrderedCollection new.! !
 
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'SG 6/15/2022 14:13:19'!
+named: aName
+	accountName := aName! !
+
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'SG 6/15/2022 11:16:22'!
 balance
@@ -1081,6 +1088,10 @@ hasRegistered: aTransaction
 
 	^ transactions includes: aTransaction 
 ! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'SG 6/15/2022 14:13:41'!
+name
+	^accountName ! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
@@ -1099,36 +1110,26 @@ addTransactionsTo: aCollectionOfTransactions
 
 	aCollectionOfTransactions addAll: transactions ! !
 
+!ReceptiveAccount methodsFor: 'private' stamp: 'SG 6/15/2022 16:16:55'!
+printTransactionsInAReport: aReport
+	transactions do: [ :aTransaction | 
+		aTransaction affectReport: aReport
+		]! !
+
 
 !ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
 addedTo: aPortfolio 
 	
 	! !
 
+!ReceptiveAccount methodsFor: 'composition' stamp: 'SG 6/15/2022 14:56:28'!
+affectReport: aReport
+	^aReport beAffectedByAccount: self.! !
+
 !ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 11:54:51'!
 isComposedBy: anAccount
 
 	^self = anAccount ! !
-
-
-!ReceptiveAccount methodsFor: 'nil' stamp: 'SG 6/15/2022 14:56:28'!
-affectReport: aReport
-	^aReport beAffectedByAccount: self.! !
-
-!ReceptiveAccount methodsFor: 'nil' stamp: 'SG 6/15/2022 14:13:19'!
-named: aName
-	accountName := aName! !
-
-
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:13:41'!
-name
-	^accountName ! !
-
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:16:55'!
-printTransactionsInAReport: aReport
-	transactions do: [ :aTransaction | 
-		aTransaction affectReport: aReport
-		]! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
@@ -1149,7 +1150,8 @@ affectBalance: aBalance
 
 	self subclassResponsibility ! !
 
-!AccountTransaction methodsFor: 'balance' stamp: 'SG 6/14/2022 16:02:28'!
+
+!AccountTransaction methodsFor: 'report' stamp: 'SG 6/14/2022 16:02:28'!
 affectReport: aReport
 
 	self subclassResponsibility ! !
@@ -1180,7 +1182,7 @@ affectBalance: aBalance
 	^aBalance + value ! !
 
 
-!Deposit methodsFor: 'as yet unclassified' stamp: 'SG 6/14/2022 15:45:31'!
+!Deposit methodsFor: 'report' stamp: 'SG 6/14/2022 15:45:31'!
 affectReport: aReport
 	^aReport beAffectedByDeposit: self! !
 
@@ -1261,7 +1263,7 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'SG 6/14/2022 15:45:31'!
+!TransferDepositLeg methodsFor: 'report' stamp: 'SG 6/14/2022 15:45:31'!
 affectReport: aReport
 	^aReport beAffectedByTransferDeposit: self! !
 
@@ -1285,7 +1287,7 @@ affectBalance: aBalance
 	^aBalance - self value! !
 
 
-!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'SG 6/14/2022 15:45:32'!
+!TransferWithdrawLeg methodsFor: 'report' stamp: 'SG 6/14/2022 15:45:32'!
 affectReport: aReport
 	^aReport beAffectedByTransferWithdraw: self! !
 
@@ -1315,7 +1317,7 @@ affectBalance: aBalance
 	^aBalance - value! !
 
 
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'SG 6/14/2022 15:45:32'!
+!Withdraw methodsFor: 'report' stamp: 'SG 6/14/2022 15:45:32'!
 affectReport: aReport
 	^aReport beAffectedByWithdraw: self! !
 
@@ -1349,20 +1351,17 @@ Object subclass: #Report
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!Report methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:27:51'!
-canBeAdded: anAccount
-	^self subclassResponsibility ! !
-
-!Report methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:26:34'!
+!Report methodsFor: 'public' stamp: 'SG 6/11/2022 17:26:34'!
 createReportFor: anAccount
 	^self subclassResponsibility ! !
 
-!Report methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:27:21'!
-initialize
+!Report methodsFor: 'public' stamp: 'SG 6/11/2022 17:26:07'!
+showReport
 	^self subclassResponsibility ! !
 
-!Report methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 17:26:07'!
-showReport
+
+!Report methodsFor: 'initialization' stamp: 'SG 6/11/2022 17:27:21'!
+initialize
 	^self subclassResponsibility ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -1400,34 +1399,6 @@ initialize
 	reportCollection := OrderedCollection new.! !
 
 
-!AccountSummary methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 15:33:03'!
-beAffectedByDeposit: aDeposit
-	reportCollection add: ('Deposito por ', 
-	(aDeposit value amount) printString,
-	' ', 
-	(aDeposit value unit) printString)! !
-
-!AccountSummary methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 15:34:31'!
-beAffectedByTransferDeposit: aTransferDeposit
-	reportCollection add: ('Entrada por transferencia de ', 
-	(aTransferDeposit value amount) printString,
-	' ', 
-	(aTransferDeposit value unit) printString)! !
-
-!AccountSummary methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 15:34:57'!
-beAffectedByTransferWithdraw: aTransferWithdraw
-	reportCollection add: ('Salida por transferencia de ', 
-	(aTransferWithdraw value amount) printString,
-	' ', 
-	(aTransferWithdraw value unit) printString)! !
-
-!AccountSummary methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 15:33:14'!
-beAffectedByWithdraw: aWithdraw
-	reportCollection add: ('Extraccion por ', 
-	(aWithdraw value amount) printString,
-	' ', 
-	(aWithdraw value unit) printString)! !
-
 !AccountSummary methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 15:57:14'!
 generateString: anAccount
 	reportCollection add: 'Balance = ', 
@@ -1435,15 +1406,34 @@ generateString: anAccount
 	' '
 	, (anAccount balance unit) printString.! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'AccountSummary class' category: 'ServiciosFinancieros-Solucion'!
-AccountSummary class
-	instanceVariableNames: ''!
+!AccountSummary methodsFor: 'visitors' stamp: 'SG 6/14/2022 15:33:03'!
+beAffectedByDeposit: aDeposit
+	reportCollection add: ('Deposito por ', 
+	(aDeposit value amount) printString,
+	' ', 
+	(aDeposit value unit) printString)! !
 
-!AccountSummary class methodsFor: 'as yet unclassified' stamp: 'SG 6/11/2022 14:38:17'!
-onlyAccountsCanGenerateAccountSummaryError
-	^'Only accounts can generate an accountSummary'! !
+!AccountSummary methodsFor: 'visitors' stamp: 'SG 6/14/2022 15:34:31'!
+beAffectedByTransferDeposit: aTransferDeposit
+	reportCollection add: ('Entrada por transferencia de ', 
+	(aTransferDeposit value amount) printString,
+	' ', 
+	(aTransferDeposit value unit) printString)! !
+
+!AccountSummary methodsFor: 'visitors' stamp: 'SG 6/14/2022 15:34:57'!
+beAffectedByTransferWithdraw: aTransferWithdraw
+	reportCollection add: ('Salida por transferencia de ', 
+	(aTransferWithdraw value amount) printString,
+	' ', 
+	(aTransferWithdraw value unit) printString)! !
+
+!AccountSummary methodsFor: 'visitors' stamp: 'SG 6/14/2022 15:33:14'!
+beAffectedByWithdraw: aWithdraw
+	reportCollection add: ('Extraccion por ', 
+	(aWithdraw value amount) printString,
+	' ', 
+	(aWithdraw value unit) printString)! !
 
 
 !classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros-Solucion'!
@@ -1453,7 +1443,16 @@ Report subclass: #PortfolioDetailedTreePrinter
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:14:04'!
+!PortfolioDetailedTreePrinter methodsFor: 'public' stamp: 'SG 6/15/2022 15:58:06'!
+createReportFor: anAccount
+	anAccount affectReport: self! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'public' stamp: 'SG 6/15/2022 15:57:27'!
+showReport
+	^treeCollection ! !
+
+
+!PortfolioDetailedTreePrinter methodsFor: 'visitors' stamp: 'SG 6/15/2022 16:14:04'!
 beAffectedByAccount: aAccount
 	| originalSpace |
 	
@@ -1468,14 +1467,14 @@ beAffectedByAccount: aAccount
 	
 	space := originalSpace.! !
 
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:21:41'!
+!PortfolioDetailedTreePrinter methodsFor: 'visitors' stamp: 'SG 6/15/2022 16:21:41'!
 beAffectedByDeposit: aDeposit
 	treeCollection add: (space, 'Deposito por ', 
 	(aDeposit value amount) printString,
 	' ', 
 	(aDeposit value unit) printString)! !
 
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 17:14:29'!
+!PortfolioDetailedTreePrinter methodsFor: 'visitors' stamp: 'SG 6/15/2022 17:14:29'!
 beAffectedByPortfolio: aPortfolio
 	| originalSpace |
 	
@@ -1490,39 +1489,32 @@ beAffectedByPortfolio: aPortfolio
 	
 	space := originalSpace.! !
 
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:21:53'!
+!PortfolioDetailedTreePrinter methodsFor: 'visitors' stamp: 'SG 6/15/2022 16:21:53'!
 beAffectedByTransferDeposit: aTransferDeposit
 	treeCollection add: (space, 'Entrada por transferencia de ', 
 	(aTransferDeposit value amount) printString,
 	' ', 
 	(aTransferDeposit value unit) printString)! !
 
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:22:09'!
+!PortfolioDetailedTreePrinter methodsFor: 'visitors' stamp: 'SG 6/15/2022 16:22:09'!
 beAffectedByTransferWithdraw: aTransferWithdraw
 	treeCollection add: (space, 'Salida por transferencia de ', 
 	(aTransferWithdraw value amount) printString,
 	' ', 
 	(aTransferWithdraw value unit) printString)! !
 
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 16:21:32'!
+!PortfolioDetailedTreePrinter methodsFor: 'visitors' stamp: 'SG 6/15/2022 16:21:32'!
 beAffectedByWithdraw: aWithdraw
 	treeCollection add: (space, 'Extraccion por ', 
 	(aWithdraw value amount) printString,
 	' ', 
 	(aWithdraw value unit) printString)! !
 
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:58:06'!
-createReportFor: anAccount
-	anAccount affectReport: self! !
 
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:57:01'!
+!PortfolioDetailedTreePrinter methodsFor: 'initialization' stamp: 'SG 6/15/2022 15:57:01'!
 initialize
 	treeCollection := OrderedCollection new.
 	space := ''.! !
-
-!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:57:27'!
-showReport
-	^treeCollection ! !
 
 
 !classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros-Solucion'!
@@ -1532,11 +1524,11 @@ Report subclass: #PortfolioTreePrinter
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:17:42'!
+!PortfolioTreePrinter methodsFor: 'visitors' stamp: 'SG 6/15/2022 15:17:42'!
 beAffectedByAccount: aAccount
 	treeCollection add: space, aAccount name.! !
 
-!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:21:36'!
+!PortfolioTreePrinter methodsFor: 'visitors' stamp: 'SG 6/15/2022 15:21:36'!
 beAffectedByPortfolio: aPortfolio
 	| originalSpace |
 	
@@ -1548,18 +1540,20 @@ beAffectedByPortfolio: aPortfolio
 	aPortfolio printAccountsInAReport: self.
 	space := originalSpace.! !
 
-!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:31:38'!
+
+!PortfolioTreePrinter methodsFor: 'public' stamp: 'SG 6/15/2022 14:31:38'!
 createReportFor: anAccount
 	anAccount affectReport: self.! !
 
-!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 15:42:52'!
+!PortfolioTreePrinter methodsFor: 'public' stamp: 'SG 6/15/2022 14:22:31'!
+showReport
+	^treeCollection ! !
+
+
+!PortfolioTreePrinter methodsFor: 'initialization' stamp: 'SG 6/15/2022 15:42:52'!
 initialize
 	treeCollection := OrderedCollection new.
 	space := ''.! !
-
-!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'SG 6/15/2022 14:22:31'!
-showReport
-	^treeCollection ! !
 
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
@@ -1585,27 +1579,28 @@ showReport
 ! !
 
 
-!TransferNet methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 15:01:03'!
-beAffectedByDeposit: aDeposit 
-	! !
-
-!TransferNet methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 14:59:31'!
-beAffectedByTransferDeposit: aTransferDeposit
-	netBalance := aTransferDeposit affectBalance: netBalance ! !
-
-!TransferNet methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 14:59:19'!
-beAffectedByTransferWithdraw: aTransferWithdraw
-	netBalance := aTransferWithdraw affectBalance: netBalance ! !
-
-!TransferNet methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 15:00:58'!
-beAffectedByWithdraw: aWithdraw! !
-
 !TransferNet methodsFor: 'Internal Operations' stamp: 'SG 6/14/2022 15:03:18'!
 generateString
 	netReport := 'Neto de transferencias = ',
 			(netBalance value amount) printString,
 			' ',
 			 (netBalance value unit) printString! !
+
+
+!TransferNet methodsFor: 'visitors' stamp: 'SG 6/14/2022 15:01:03'!
+beAffectedByDeposit: aDeposit 
+	! !
+
+!TransferNet methodsFor: 'visitors' stamp: 'SG 6/14/2022 14:59:31'!
+beAffectedByTransferDeposit: aTransferDeposit
+	netBalance := aTransferDeposit affectBalance: netBalance ! !
+
+!TransferNet methodsFor: 'visitors' stamp: 'SG 6/14/2022 14:59:19'!
+beAffectedByTransferWithdraw: aTransferWithdraw
+	netBalance := aTransferWithdraw affectBalance: netBalance ! !
+
+!TransferNet methodsFor: 'visitors' stamp: 'SG 6/14/2022 15:00:58'!
+beAffectedByWithdraw: aWithdraw! !
 
 
 !TransferNet methodsFor: 'initialization' stamp: 'SG 6/14/2022 15:02:09'!
